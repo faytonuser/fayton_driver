@@ -15,7 +15,6 @@ enum authProblems { UserNotFound, PasswordNotValid, NetworkError, UnknownError }
 
 class AuthService {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
-  static FirebaseAuth auth = FirebaseAuth.instance;
 
   static Future<ProfileModel?> getCurrentUser(String userId) async {
     try {

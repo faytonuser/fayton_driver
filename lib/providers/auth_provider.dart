@@ -1,9 +1,12 @@
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as model;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/models/profile_model.dart';
 import 'package:driver/models/state_model.dart';
+import 'package:driver/models/verificaiton_model.dart';
 import 'package:driver/screens/login_screen.dart';
 import 'package:driver/screens/sms_confirmation_screen.dart';
 import 'package:driver/services/auth_service.dart';
@@ -61,6 +64,10 @@ class AuthProvider extends ChangeNotifier {
     _isPasswordVisible = value;
     notifyListeners();
   }
+
+  Client _client = Client();
+
+  Client get client => _client;
 
   String? _phoneNumber;
   String? get phoneNumber => _phoneNumber;
@@ -127,6 +134,13 @@ class AuthProvider extends ChangeNotifier {
   bool get verifyStep => _verifyStep;
   set verifyStep(value) {
     _verifyStep = value;
+    notifyListeners();
+  }
+
+  String? _selectedPhoneCode;
+  String? get selectedPhoneCode => _selectedPhoneCode;
+  set selectedPhoneCode(value) {
+    _selectedPhoneCode = value;
     notifyListeners();
   }
 
@@ -241,9 +255,27 @@ class AuthProvider extends ChangeNotifier {
       }
       isLoading = false;
       return true;
+    } on FirebaseAuthException catch (e) {
+      isLoading = false;
+      if (e.code == 'user-not-found') {
+        throw Exception('Bu hesab mövcud deyil.');
+      } else if (e.code == 'wrong-password') {
+        throw Exception('Parol doğru deyil');
+      } else if (e.code == 'user-disabled') {
+        throw Exception(
+            'İstifadəçi hesabı administrator tərəfindən deaktiv edilmişdir.');
+      } else if (e.code == 'too-many-requests') {
+        throw Exception('Bu hesaba giriş üçün çox sayda sorğu göndərilib.');
+      } else if (e.code == 'operation-not-allowed') {
+        throw Exception(
+            'Server xətası, zəhmət olmasa daha sonra yenidən cəhd edin.');
+      } else {
+        throw Exception('Giriş uğursuz oldu. Zəhmət olmasa yenidən cəhd edin.');
+      }
     } catch (e) {
       isLoading = false;
-      throw Exception(e);
+      throw Exception(
+          'Gözlənilməz bir xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.');
     }
   }
 
@@ -258,51 +290,40 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  model.Token? _token;
+  model.Token? get token => _token;
+  set token(value) {
+    _token = value;
+    notifyListeners();
+  }
+
   Future<void> sendSms(BuildContext context) async {
-    FirebaseAuth _auth = FirebaseAuth.instance;
     try {
-      isLoading = true;
-      await _auth.verifyPhoneNumber(
-          phoneNumber: "+994" + phoneController.text,
-          timeout: const Duration(seconds: 60),
-          verificationCompleted: (value) async {
-            try {
-              var user = await auth.signInWithCredential(
-                AuthCredential(
-                    providerId: value.providerId,
-                    signInMethod: value.signInMethod),
-              );
-              currentUser = await AuthService.getCurrentUser(user.user!.uid);
+      final Account account = Account(client);
 
-              /*      Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => LoginScreen(),
-                ),
-              );*/
-            } catch (e) {
-              throw Exception();
-            }
-          },
-          verificationFailed: (value) {
-            isLoading = false;
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("Sms failed")));
-          },
-          codeSent: (value, code) {
-            isLoading = false;
-            verificationId = value;
-            /*         Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => SmsConfirmationScreen(),
-              ),
-            );*/
-          },
-          codeAutoRetrievalTimeout: (value) {});
+      token = await account.createPhoneToken(
+        userId: ID.unique(),
+        phone: selectedPhoneCode! +
+            phoneController.text.trim().replaceAll(" ", ""),
+      );
+    } on AppwriteException {
+      rethrow;
+    }
+  }
+
+  Future<model.Session> verifyOTP({
+    required String userId,
+    required String otp,
+  }) async {
+    try {
+      final Account account = Account(client);
+
+      final session = await account.updatePhoneSession(
+        userId: userId,
+        secret: otp,
+      );
+      return session;
     } catch (e) {
-      isLoading = false;
-
       throw Exception(e);
     }
   }
@@ -361,6 +382,7 @@ class AuthProvider extends ChangeNotifier {
   String facePhotoUrl = "";
   String backPhoto = "";
   String frontPhoto = "";
+
   Future<ProfileModel?> addUserToDb() async {
     isLoading = true;
     FirebaseFirestore client = FirebaseFirestore.instance;
@@ -419,5 +441,32 @@ class AuthProvider extends ChangeNotifier {
 
     isLoading = false;
     throw Exception("User could not created");
+  }
+
+  Future<ProfileModel?> updateUserToDb() async {
+    FirebaseFirestore client = FirebaseFirestore.instance;
+    try {
+      isLoading = true;
+      await uploadFiles(currentUser!.userId);
+      var verificationModel = VerificationModel(
+        isDriverLicenseFrontUploaded: true,
+        isDriverLicenseBackUploaded: true,
+        isFacePhotoUploaded: true,
+        facePhotoUrl: facePhotoUrl,
+        driverLicenseBackPhoto: backPhoto,
+        driverLicenseFrontPhoto: frontPhoto,
+      );
+
+      await client.collection('drivers').doc(auth.currentUser!.uid).set(
+            verificationModel.toJson(),
+            SetOptions(merge: true),
+          );
+      currentUser = await AuthService.getCurrentUser(auth.currentUser!.uid);
+      isLoading = false;
+      return currentUser;
+    } catch (e) {
+      isLoading = false;
+      throw Exception(e);
+    }
   }
 }

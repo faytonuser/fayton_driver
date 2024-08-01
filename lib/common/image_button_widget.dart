@@ -1,12 +1,12 @@
 import 'package:driver/common/app_fonts.dart';
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+class CustomImageButtonWidget extends StatelessWidget {
   final String text;
   final Color? backgroundColor;
   final Color? textColor;
   final String? assetPath;
-  const CustomButton(
+  const CustomImageButtonWidget(
       {Key? key,
       required this.text,
       this.backgroundColor,
@@ -30,5 +30,5 @@ class CustomButton extends StatelessWidget {
         ),
       ),
     );
-  } 
+  }
 }

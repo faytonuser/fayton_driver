@@ -10,8 +10,8 @@ import 'package:driver/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   final ProfileModel? currentUser;
@@ -41,60 +41,55 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   Widget build(BuildContext context) {
     var navbarProvider = Provider.of<NavbarProvider>(context);
     return PersistentTabView(
-      context,
+      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+        navBarConfig: navBarConfig,
+      ),
       controller: navbarProvider.tabController,
-      screens: [
-        HomeScreen(),
-        MessageListScreen(),
-        NewProfileScreen(),
-      ],
-      items: [
-        PersistentBottomNavBarItem(
-          icon: Image.asset(
-            AssetPaths.logo,
+      tabs: [
+        PersistentTabConfig(
+          screen: HomeScreen(),
+          item: ItemConfig(
+            icon: Image.asset(
+              AssetPaths.logo,
+            ),
+            title: ("Home"),
+            activeForegroundColor: CupertinoColors.activeBlue,
+            inactiveBackgroundColor: CupertinoColors.systemGrey,
           ),
-          title: ("Home"),
-          activeColorPrimary: CupertinoColors.activeBlue,
-          inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
-        PersistentBottomNavBarItem(
-          icon: Icon(Icons.message),
-          title: ("Messages"),
-          activeColorPrimary: CupertinoColors.activeBlue,
-          inactiveColorPrimary: CupertinoColors.systemGrey,
+        PersistentTabConfig(
+          screen: MessageListScreen(),
+          item: ItemConfig(
+            icon: Icon(Icons.message),
+            title: ("Messages"),
+            activeForegroundColor: CupertinoColors.activeBlue,
+            inactiveBackgroundColor: CupertinoColors.systemGrey,
+          ),
         ),
-        PersistentBottomNavBarItem(
-          icon: Icon(CupertinoIcons.person),
-          title: ("Profile"),
-          activeColorPrimary: CupertinoColors.activeBlue,
-          inactiveColorPrimary: CupertinoColors.systemGrey,
+        PersistentTabConfig(
+          screen: NewProfileScreen(),
+          item: ItemConfig(
+            icon: Icon(CupertinoIcons.person),
+            title: ("Profile"),
+            activeForegroundColor: CupertinoColors.activeBlue,
+            inactiveBackgroundColor: CupertinoColors.systemGrey,
+          ),
         ),
       ],
-      confineInSafeArea: true,
       backgroundColor: Colors.white,
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
-      hideNavigationBarWhenKeyboardShows: true,
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
-      ),
+
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: const ItemAnimationProperties(
-        // Navigation Bar's items animation properties.
-        duration: Duration(milliseconds: 200),
-        curve: Curves.ease,
-      ),
+
       screenTransitionAnimation: const ScreenTransitionAnimation(
         // Screen transition animation on change of selected tab.
-        animateTabTransition: true,
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),
       ),
-      navBarStyle:
-          NavBarStyle.style1, // Choose the nav bar style with this property.
+      // Choose the nav bar style with this property.
     );
   }
 }

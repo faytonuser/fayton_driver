@@ -50,7 +50,7 @@ class LoginScreen extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
-                    "Driver",
+                    "Sürücü",
                     style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold, fontSize: 18),
                   ),
@@ -60,6 +60,14 @@ class LoginScreen extends StatelessWidget {
                       inputType: TextInputType.emailAddress,
                       controller: authProvider.emailController,
                       hintText: 'E-poçt',
+                      validator: (value) {
+                        if (value == null) {
+                          return "Bu sahə tələb olunur";
+                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
+                          return "E-poçt ünvanı doğru deyil";
+                        }
+                      },
                       // validator: (value) {
                       //   if (value == null || value.isEmpty) {
                       //     return 'This field is required';
@@ -73,7 +81,8 @@ class LoginScreen extends StatelessWidget {
                     child: CustomTextField(
                       controller: authProvider.passwordController,
                       hintText: 'Parol',
-                      isSecureText: authProvider.isPasswordVisible ? false : true,
+                      isSecureText:
+                          authProvider.isPasswordVisible ? false : true,
                       suffixIcon: Icon(authProvider.isPasswordVisible
                           ? Icons.visibility
                           : Icons.visibility_off),
@@ -125,15 +134,20 @@ class LoginScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () async {
                         if (_formkey.currentState!.validate()) {
-                          var response = await authProvider.signInWithEmail();
-                          if (response == true) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CustomNavigationBar(
-                                    currentUser: authProvider.currentUser),
-                              ),
-                            );
+                          try {
+                            var response = await authProvider.signInWithEmail();
+                            if (response == true) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => CustomNavigationBar(
+                                      currentUser: authProvider.currentUser),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            throw Exception(
+                                e.toString().replaceAll("Exception:", ""));
                           }
                         }
                       },

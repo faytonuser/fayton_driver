@@ -78,8 +78,12 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         controller: authProvider.emailController,
                         hintText: 'E-poçt',
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                          if (value == null) {
+                            return "This field is required";
+                          } else if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
+                            return "E-poçt ünvanı doğru deyil";
                           }
                         },
                       ),
@@ -101,46 +105,27 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         height: 48,
                         child: InternationalPhoneNumberInput(
                           onInputChanged: (PhoneNumber number) {
-                            numberInitialCode = number.isoCode.toString();
+                            setState(() {
+                              numberInitialCode = number.isoCode.toString();
+                            });
                             print(number.phoneNumber.toString() +
                                 " onInputChanged");
+                            authProvider.selectedPhoneCode = number.dialCode;
                           },
-
                           onInputValidated: (bool value) {
                             print(value);
                           },
-
                           textAlign: TextAlign.start,
-                          countries: ["AZ"],
+                          countries: ["AZ", "TR"],
                           ignoreBlank: false,
                           autoValidateMode: AutovalidateMode.disabled,
                           selectorTextStyle: TextStyle(color: Colors.black),
                           initialValue: PhoneNumber(
-                            isoCode: "AZ",
+                            isoCode: numberInitialCode,
                           ),
                           textFieldController: authProvider.phoneController,
                           keyboardType: TextInputType.numberWithOptions(
                               signed: true, decimal: true),
-                          // inputBorder: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(30.0),
-                          //   borderSide: BorderSide(
-                          //     width: 0,
-                          //     color: Colors.transparent,
-                          //   ),
-                          // ),
-                          // inputDecoration: InputDecoration(
-                          //   hintText: "Telefon nömrəsi",
-                          //   hintStyle: GoogleFonts.roboto(
-                          //       color: Colors.black54, fontSize: 16),
-                          //   contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                          //   border: OutlineInputBorder(
-                          //     borderRadius: BorderRadius.circular(30.0),
-                          //     borderSide: BorderSide(
-                          //       width: 0,
-                          //       color: Colors.transparent,
-                          //     ),
-                          //   ),
-                          // ),
                           validator: null,
                           onSaved: (PhoneNumber number) {
                             print('On Saved: $number');
@@ -148,64 +133,6 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 48.0, right: 48),
-                    //   child: TextFormField(
-                    //     controller: authProvider.phoneController,
-                    //     autocorrect: false,
-                    //     textInputAction: TextInputAction.next,
-                    //     keyboardType: TextInputType.phone,
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty) {
-                    //         return 'This field is required';
-                    //       }
-                    //       return null;
-                    //     },
-                    //     decoration: InputDecoration(
-                    //       hintText: 'Telefon nömrəsi',
-                    //       hintStyle: AppFonts.generalTextThemeWithTransparancy(
-                    //           Colors.black),
-                    //       prefixIcon: Container(
-                    //         width: 70,
-                    //         child: Center(
-                    //           child: Text(
-                    //             "+994",
-                    //             style:
-                    //                 AppFonts.generalTextTheme(Colors.black54),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    /*       Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: TextFormField(
-                  controller: authProvider.phoneController,
-                  hintText: 'Telefon nömrəsi',
-                   keyboardType: TextInputType.phone,
-                   validator: (value) {
-                     if (value == null || value.isEmpty) {
-                       return 'This field is required';
-                     }
-                   },
-                  pre: CountryCodePicker(
-                    onChanged: (CountryCode countryCode) {
-                      setState(() {
-                        print('New Country selected: ${countryCode.name}');
-                        countryAreaCode = countryCode.toString();
-                        print(countryAreaCode);
-                      });
-                    },
-                    initialSelection: 'TR',
-                    favorite: ['+90', 'TR'],
-                    textStyle: TextStyle(fontSize: 12, color: AppColors.grayColor),
-                    showCountryOnly: false,
-                    showOnlyCountryWhenClosed: false,
-                    alignLeft: false,
-                  ),
-                ),
-              ),*/
                     SizedBox(
                       height: 8,
                     ),

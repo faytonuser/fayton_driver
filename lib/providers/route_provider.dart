@@ -79,16 +79,16 @@ class RouteProvider extends ChangeNotifier {
       String driverId, String plate, ProfileModel? profile) async {
     try {
       var route = RouteModel(
+        to: selectedToRoute?.title ?? "",
         startDate: DateTime(selectedStartDate!.year, selectedStartDate!.month,
             selectedStartDate!.day, startTime!.hour, startTime!.minute),
         endDate: DateTime(selectedEndDate!.year, selectedEndDate!.month,
             selectedEndDate!.day, endTime!.hour, endTime!.minute),
-        to: selectedToRoute?.title ?? "",
         from: selectedFromRoute?.title ?? "TR",
         remainingPassenger: maxTravellerController.text,
         maxPassengerCount: int.parse(maxTravellerController.text),
         journeyDuration: estimatedTravelDuration,
-        isActive: false,
+        isActive: true,
         isComplete: false,
         driverPlate: plate,
         driverId: driverId,

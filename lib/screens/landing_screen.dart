@@ -67,7 +67,7 @@ class _VerificationLandingScreenState extends State<VerificationLandingScreen> {
           } else if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData &&
               !snapshot.data!.isVerified) {
-            return VerificationWaitingScreen(
+            return CustomNavigationBar(
               currentUser: snapshot.data,
             );
           } else if (snapshot.connectionState == ConnectionState.done &&
@@ -84,4 +84,3 @@ class _VerificationLandingScreenState extends State<VerificationLandingScreen> {
     );
   }
 }
-

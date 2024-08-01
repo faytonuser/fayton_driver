@@ -55,7 +55,7 @@ class _HomeScreenState extends State<CompletedRideScreen> {
               snapshot.hasError == false &&
               snapshot.data!.isEmpty) {
             return Center(
-              child: Text("There is no route"),
+              child: Text("Gediş tapılmadı"),
             );
           } else if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasError == false &&

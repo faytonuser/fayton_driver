@@ -5,10 +5,10 @@ import 'package:driver/common/app_colors.dart';
 import 'package:driver/common/app_fonts.dart';
 import 'package:driver/common/assets.dart';
 import 'package:driver/common/custom_button.dart';
-import 'package:driver/common/custom_text_field.dart';
 import 'package:driver/common/waiting_indicator.dart';
 import 'package:driver/models/profile_model.dart';
 import 'package:driver/providers/auth_provider.dart';
+import 'package:driver/screens/custom_navigation_bar.dart';
 import 'package:driver/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class VerificationWaitingScreen extends StatefulWidget {
 class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
   @override
   void initState() {
-  //  updateDriverIsVerified();
+    //  updateDriverIsVerified();
     var authProvider = Provider.of<AuthProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       authProvider.currentUser = widget.currentUser;
@@ -43,8 +43,8 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // drivers koleksiyonundaki belirli belgeyi alın
-      DocumentReference driverRef = firestore.collection('drivers').
-      doc(authProvider.currentUser!.userId);
+      DocumentReference driverRef =
+          firestore.collection('drivers').doc(authProvider.currentUser!.userId);
 
       // Belgeyi güncelleyin
       await driverRef.update({'isVerified': true});
@@ -85,8 +85,9 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
         FirebaseFirestore firestore = FirebaseFirestore.instance;
 
         // drivers koleksiyonundaki belirli belgeyi alın
-        DocumentReference driverRef = firestore.collection('drivers').
-        doc(authProvider.currentUser!.userId);
+        DocumentReference driverRef = firestore
+            .collection('drivers')
+            .doc(authProvider.currentUser!.userId);
 
         // Belgeyi güncelleyin
         driverRef.update({'isVerified': true});
@@ -96,7 +97,6 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
         print('Error updating driver isVerified: $e');
       }
     });
-
 
     return Scaffold(
       body: authProvider.currentUser == null
@@ -130,74 +130,39 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
                         child: GestureDetector(
                           onTap: () async {
                             _sendEmail();
-                      /*      var result = await OpenMailApp.openMailApp();
-
-                            // If no mail apps found, show error
-                            if (!result.didOpen && !result.canOpen) {
-                              showNoMailAppsDialog(
-                                context,
-                              );
-
-                              // iOS: if multiple mail apps found, show dialog to select.
-                              // There is no native intent/default app system in iOS so
-                              // you have to do it yourself.
-                            } else if (!result.didOpen && result.canOpen) {
-                              showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return MailAppPickerDialog(
-                                    mailApps: result.options,
-                                    title: "Plaese write your message",
-                                    emailContent: EmailContent(
-                                        to: ["shamkhal@gmail.com"],
-                                        body: "Please send your message"),
-                                        
-
-                                  );
-                                },
-                              );
-                            }*/
-                            // showModalBottomSheet(
-                            //     context: context,
-                            //     builder: (context) {
-                            //       return Column(
-                            //         mainAxisAlignment:
-                            //             MainAxisAlignment.spaceBetween,
-                            //         children: [
-                            //           Container(
-                            //             height: 120,
-                            //             width: double.infinity,
-                            //             child: Padding(
-                            //               padding: const EdgeInsets.only(
-                            //                   right: 48.0, left: 48, top: 12),
-                            //               child: CustomTextField(
-                            //                   controller: authProvider
-                            //                       .supportMailController,
-                            //                   maxLine: 5,
-                            //                   hintText: 'Support Message'),
-                            //             ),
-                            //           ),
-                            //           Padding(
-                            //             padding: const EdgeInsets.only(
-                            //                 right: 48.0,
-                            //                 left: 48,
-                            //                 top: 12,
-                            //                 bottom: 48),
-                            //             child: CustomButton(
-                            //               text: "Send",
-                            //               backgroundColor:
-                            //                   AppColors.primaryColor,
-                            //             ),
-                            //           )
-                            //         ],
-                            //       );
-                            //     });
                           },
                           child: Padding(
                             padding:
                                 const EdgeInsets.only(left: 48.0, right: 48),
                             child: CustomButton(
                               text: 'Bizə e-poçt göndərin',
+                              backgroundColor: AppColors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            authProvider.currentUser =
+                                await AuthService.getCurrentUser(
+                                    authProvider.currentUser!.userId);
+                            if (authProvider.currentUser!.isVerified) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => CustomNavigationBar(
+                                    currentUser: authProvider.currentUser,
+                                  ),
+                                ),
+                              );
+                            } else {}
+                          },
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 48.0, right: 48),
+                            child: CustomButton(
+                              text: 'Təzələmək',
                               backgroundColor: AppColors.primaryColor,
                             ),
                           ),
@@ -215,9 +180,10 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
     String? encodeQueryParameters(Map<String, String> params) {
       return params.entries
           .map((MapEntry<String, String> e) =>
-      '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
           .join('&');
     }
+
     // Mailto URL'sini oluştur
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',

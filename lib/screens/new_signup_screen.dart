@@ -55,21 +55,21 @@ class NewSignupScreen extends StatelessWidget {
                     if (index == 0) {
                     } else if (index == 1) {
                       authProvider.verifyStep = false;
-                      authProvider.verifySecondStep = true;
-                    } else if (index == 2) {
-                      authProvider.verifySecondStep = false;
                       authProvider.vehicleDetailStep = true;
+                    } else if (index == 2) {
+                      // authProvider.verifySecondStep = false;
+                      // authProvider.vehicleDetailStep = true;
                     } else if (index == 3) {
-                      authProvider.vehicleDetailStep = false;
-                      authProvider.driverBackStep = true;
+                      // authProvider.vehicleDetailStep = false;
+                      // authProvider.driverBackStep = true;
                     } else if (index == 4) {
-                      authProvider.vehicleDetailStep = false;
-                      authProvider.driverBackStep = false;
-                      authProvider.driverFrontStep = true;
+                      // authProvider.vehicleDetailStep = false;
+                      // authProvider.driverBackStep = false;
+                      // authProvider.driverFrontStep = true;
                     } else if (index == 5) {
-                      authProvider.vehicleDetailStep = false;
-                      authProvider.driverFrontStep = false;
-                      authProvider.lastStep = true;
+                      // authProvider.vehicleDetailStep = false;
+                      // authProvider.driverFrontStep = false;
+                      // authProvider.lastStep = true;
                     } else {
                       authProvider.lastStep = false;
                       authProvider.verifyStep = false;
@@ -82,7 +82,7 @@ class NewSignupScreen extends StatelessWidget {
                   controller: _pageController,
                   children: [
                     EmailPasswordScreen(),
-                    SmsConfirmationScreen(),
+                    // SmsConfirmationScreen(token: null,),
                     SizedBox(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -90,9 +90,9 @@ class NewSignupScreen extends StatelessWidget {
                       ),
                       height: 250,
                     ),
-                    EndDriverLicenseScreen(),
-                    FronDriverLicenseScreen(),
-                    FacePhotoScreen(),
+                    // EndDriverLicenseScreen(),
+                    // FronDriverLicenseScreen(),
+                    // FacePhotoScreen(),
                   ],
                 ),
               ),
@@ -159,6 +159,12 @@ class NewSignupScreen extends StatelessWidget {
                             duration: Duration(seconds: 1),
                             curve: Curves.easeIn);
                         authProvider.activeStep = _pageController.page?.toInt();
+                      }).catchError((e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                          ),
+                        );
                       });
                     }
                   } else if (authProvider.verifySecondStep == true) {
@@ -170,9 +176,18 @@ class NewSignupScreen extends StatelessWidget {
                   } else if (authProvider.vehicleDetailStep == true) {
                     if (authProvider.identityInfoFormKey.currentState!
                         .validate()) {
-                      _pageController.nextPage(
-                          duration: Duration(seconds: 1), curve: Curves.easeIn);
-                      authProvider.activeStep = _pageController.page?.toInt();
+                      var response = await authProvider.addUserToDb();
+
+                      if (response != null) {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VerificationWaitingScreen(
+                                currentUser: authProvider.currentUser),
+                          ),
+                          (route) => false,
+                        );
+                      }
                     }
                   } else if (authProvider.lastStep == true) {
                     if (authProvider.facePhoto != null) {

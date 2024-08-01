@@ -1,3 +1,4 @@
+import 'package:driver/common/custom_button.dart';
 import 'package:driver/common/custom_text_field.dart';
 import 'package:driver/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,7 @@ class IdentityInfoScreen extends StatefulWidget {
 }
 
 class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
-
-  List<String> vehicleColorList =[
+  List<String> vehicleColorList = [
     "Blue",
     "Red",
     "Yellow",
@@ -27,7 +27,8 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
     "Pink",
     "Brown",
     "Purple",
-    "Grey"];
+    "Grey"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +72,11 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                 child: CustomTextField(
                   controller: authProvider.nameController,
                   hintText: 'Ad',
-                   validator: (value) {
-                     if (value == null || value.isEmpty) {
-                       return 'This field is required';
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field is required';
                     }
-                   },
+                  },
                 ),
               ),
               SizedBox(
@@ -86,16 +87,17 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                 child: CustomTextField(
                   controller: authProvider.familyNameController,
                   hintText: 'Soyad',
-                   validator: (value) {
-                     if (value == null || value.isEmpty) {
-                       return 'This field is required';
-                     }
-                   },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field is required';
+                    }
+                  },
                 ),
               ),
               SizedBox(
                 height: 8,
-              ), Padding(
+              ),
+              Padding(
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
                 child: Center(
                   child: Column(
@@ -133,7 +135,10 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                           Text('Qadın'),
                         ],
                       ),
-                      Divider(color: AppColors.primaryColor, thickness: 0.5,)
+                      Divider(
+                        color: AppColors.primaryColor,
+                        thickness: 0.5,
+                      )
                     ],
                   ),
                 ),
@@ -156,24 +161,28 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                           authProvider.isCheck
                               ? Icons.check_box_outlined
                               : Icons.check_box_outline_blank_outlined,
-                          color:  Colors.grey,
+                          color: Colors.grey,
                         )),
                     Expanded(
                       child: Text(
-                          "Mənim sürəcəyim maşınım var",
-                          style: AppFonts.generalTextTheme(Colors.black54),),
+                        "Mənim sürəcəyim maşınım var",
+                        style: AppFonts.generalTextTheme(Colors.black54),
+                      ),
                     )
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: Divider(color: AppColors.primaryColor, thickness: 0.5,),
+                child: Divider(
+                  color: AppColors.primaryColor,
+                  thickness: 0.5,
+                ),
               ),
               SizedBox(
                 height: 8,
               ),
-    /**          Padding(
+              /**          Padding(
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
                 child: CustomTextField(
                   inputType: TextInputType.number,
@@ -194,11 +203,11 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                 child: CustomTextField(
                   controller: authProvider.plateController,
                   hintText: 'Aftomobilin seriya nomresi',
-                   validator: (value) {
-                     if (value == null || value.isEmpty || value.length > 8) {
-                       return 'This field is more than 8 chars';
-                     }
-                   },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length > 8) {
+                      return 'This field is more than 8 chars';
+                    }
+                  },
                 ),
               ),
               SizedBox(
@@ -209,11 +218,11 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                 child: CustomTextField(
                   controller: authProvider.manufaturerController,
                   hintText: 'Avtomobilin istehsalçısı və modeli',
-                   validator: (value) {
-                     if (value == null || value.isEmpty) {
-                       return 'This field is required';
-                     }
-                   },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field is required';
+                    }
+                  },
                 ),
               ),
               Padding(
@@ -258,6 +267,9 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
               ),
               SizedBox(
                 height: 8,
+              ),
+              CustomButton(
+                text: 'Tamam',
               ),
             ],
           ),
