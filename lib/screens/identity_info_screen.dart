@@ -16,19 +16,7 @@ class IdentityInfoScreen extends StatefulWidget {
 }
 
 class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
-  List<String> vehicleColorList = [
-    "Blue",
-    "Red",
-    "Yellow",
-    "Black",
-    "White",
-    "Green",
-    "Orange",
-    "Pink",
-    "Brown",
-    "Purple",
-    "Grey"
-  ];
+  List<String> vehicleColorList = ["Blue", "Red", "Yellow", "Black", "White", "Green", "Orange", "Pink", "Brown", "Purple", "Grey"];
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +29,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                height: 36,
-              ),
+              SizedBox(height: 36),
               Padding(
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
                 child: Center(
@@ -53,9 +39,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                         "Şəxsi məlumatlar və avtomobilin təfərrüatları",
                         style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
+                      SizedBox(height: 16),
                       Text(
                         "Sifariş zamanı müştərilərə yalnız adınız və avtomobilinizin təfərrüatları görünür.",
                         style: GoogleFonts.nunito(),
@@ -76,6 +60,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                     if (value == null || value.isEmpty) {
                       return 'This field is required';
                     }
+                    return null;
                   },
                 ),
               ),
@@ -91,6 +76,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                     if (value == null || value.isEmpty) {
                       return 'This field is required';
                     }
+                    return null;
                   },
                 ),
               ),
@@ -107,7 +93,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Radio(
-                            value: 'Cənab',
+                            value: 'Kişi',
                             groupValue: authProvider.selectedGender,
                             onChanged: (value) {
                               setState(() {
@@ -115,7 +101,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                               });
                             },
                           ),
-                          Text('Cənab'),
+                          Text('Kişi'),
                           Spacer(),
                           Container(
                             width: 1,
@@ -158,14 +144,12 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                           });
                         },
                         icon: Icon(
-                          authProvider.isCheck
-                              ? Icons.check_box_outlined
-                              : Icons.check_box_outline_blank_outlined,
+                          authProvider.isCheck ? Icons.check_box_outlined : Icons.check_box_outline_blank_outlined,
                           color: Colors.grey,
                         )),
                     Expanded(
                       child: Text(
-                        "Mənim sürəcəyim maşınım var",
+                        "Sürəcəyim maşınım var",
                         style: AppFonts.generalTextTheme(Colors.black54),
                       ),
                     )
@@ -207,6 +191,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                     if (value == null || value.isEmpty || value.length > 8) {
                       return 'This field is more than 8 chars';
                     }
+                    return null;
                   },
                 ),
               ),
@@ -222,6 +207,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                     if (value == null || value.isEmpty) {
                       return 'This field is required';
                     }
+                    return null;
                   },
                 ),
               ),
@@ -249,6 +235,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                     if (value == null || value.isEmpty || value.length > 15) {
                       return 'This field is more than 15 chars';
                     }
+                    return null;
                   },
                 ),
               ),
@@ -262,6 +249,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                     if (value == null || value.isEmpty || value.length > 12) {
                       return 'This field is more than 12 chars';
                     }
+                    return null;
                   },
                 ),
               ),

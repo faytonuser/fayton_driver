@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
@@ -7,32 +6,38 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/models/profile_model.dart';
 import 'package:driver/models/state_model.dart';
 import 'package:driver/models/verificaiton_model.dart';
-import 'package:driver/screens/login_screen.dart';
-import 'package:driver/screens/sms_confirmation_screen.dart';
 import 'package:driver/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class AuthProvider extends ChangeNotifier {
+  String? _emailError;
+  String? get emailError => _emailError;
+
+  String _exception = "";
+
+  String get exception => _exception;
+
+  String? _passwordError;
+  String? get passwordError => _passwordError;
+  String? _phoneError;
+  String? get phoneError => _phoneError;
+  String? _passwordAgainError;
+  String? get passwordAgainError => _passwordAgainError;
+
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
-  TextEditingController _smsCodeController = TextEditingController();
-  TextEditingController get smsCodeController => _smsCodeController;
   TextEditingController get emailController => _emailController;
   TextEditingController get passwordController => _passwordController;
   TextEditingController get phoneController => _phoneController;
-  final TextEditingController _identityNumberController =
-      TextEditingController();
-  TextEditingController get identityNumberController =>
-      _identityNumberController;
+  final TextEditingController _identityNumberController = TextEditingController();
+  TextEditingController get identityNumberController => _identityNumberController;
   TextEditingController _plateController = TextEditingController();
   TextEditingController get plateController => _plateController;
   TextEditingController _manufaturerController = TextEditingController();
@@ -51,13 +56,10 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController get familyNameController => _familyNameController;
 
   TextEditingController _signupPasswordController = TextEditingController();
-  TextEditingController get signupPasswordController =>
-      _signupPasswordController;
+  TextEditingController get signupPasswordController => _signupPasswordController;
 
-  TextEditingController _signupPasswordAgainController =
-      TextEditingController();
-  TextEditingController get signupPasswordAgainController =>
-      _signupPasswordAgainController;
+  TextEditingController _signupPasswordAgainController = TextEditingController();
+  TextEditingController get signupPasswordAgainController => _signupPasswordAgainController;
   bool _isPasswordVisible = false;
   bool get isPasswordVisible => _isPasswordVisible;
   set isPasswordVisible(value) {
@@ -73,6 +75,23 @@ class AuthProvider extends ChangeNotifier {
   String? get phoneNumber => _phoneNumber;
   set phoneNumber(value) {
     _phoneNumber = value;
+    if (value == null) {
+      _phoneError = "Bu sahə boş olmamalıdır";
+    } else {
+      _phoneError = null;
+    }
+    notifyListeners();
+  }
+
+  updateEmail(String value) {
+    _emailController.text = value;
+    if (value.isEmpty) {
+      _emailError = "Bu sahə boş olmamalıdır";
+    } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+      _emailError = "E-poçt düzgün formatda deyil";
+    } else {
+      _emailError = null;
+    }
     notifyListeners();
   }
 
@@ -247,8 +266,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> signInWithEmail() async {
     try {
       isLoading = true;
-      var user = await auth.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
+      var user = await auth.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
 
       if (user.user != null) {
         currentUser = await AuthService.getCurrentUser(user.user!.uid);
@@ -262,20 +280,17 @@ class AuthProvider extends ChangeNotifier {
       } else if (e.code == 'wrong-password') {
         throw Exception('Parol doğru deyil');
       } else if (e.code == 'user-disabled') {
-        throw Exception(
-            'İstifadəçi hesabı administrator tərəfindən deaktiv edilmişdir.');
+        throw Exception('İstifadəçi hesabı administrator tərəfindən deaktiv edilmişdir.');
       } else if (e.code == 'too-many-requests') {
         throw Exception('Bu hesaba giriş üçün çox sayda sorğu göndərilib.');
       } else if (e.code == 'operation-not-allowed') {
-        throw Exception(
-            'Server xətası, zəhmət olmasa daha sonra yenidən cəhd edin.');
+        throw Exception('Server xətası, zəhmət olmasa daha sonra yenidən cəhd edin.');
       } else {
         throw Exception('Giriş uğursuz oldu. Zəhmət olmasa yenidən cəhd edin.');
       }
     } catch (e) {
       isLoading = false;
-      throw Exception(
-          'Gözlənilməz bir xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.');
+      throw Exception('Gözlənilməz bir xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.');
     }
   }
 
@@ -297,53 +312,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendSms(BuildContext context) async {
-    try {
-      final Account account = Account(client);
-
-      token = await account.createPhoneToken(
-        userId: ID.unique(),
-        phone: selectedPhoneCode! +
-            phoneController.text.trim().replaceAll(" ", ""),
-      );
-    } on AppwriteException {
-      rethrow;
-    }
-  }
-
-  Future<model.Session> verifyOTP({
-    required String userId,
-    required String otp,
-  }) async {
-    try {
-      final Account account = Account(client);
-
-      final session = await account.updatePhoneSession(
-        userId: userId,
-        secret: otp,
-      );
-      return session;
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
   Future<String> uploadProfilePicture(File profile) async {
     try {
       isLoading = true;
-      var response = await storage
-          .ref('profile_pictures')
-          .child(currentUser!.userId)
-          .putFile(profile);
+      var response = await storage.ref('profile_pictures').child(currentUser!.userId).putFile(profile);
 
-      var downloadUrl = await storage
-          .ref('profile_pictures')
-          .child(currentUser!.userId)
-          .getDownloadURL();
-      await firestore
-          .collection('drivers')
-          .doc(currentUser!.userId)
-          .set({"profileUrl": downloadUrl}, SetOptions(merge: true));
+      var downloadUrl = await storage.ref('profile_pictures').child(currentUser!.userId).getDownloadURL();
+      await firestore.collection('drivers').doc(currentUser!.userId).set({"profileUrl": downloadUrl}, SetOptions(merge: true));
       isLoading = false;
       return downloadUrl;
     } catch (e) {
@@ -385,17 +360,20 @@ class AuthProvider extends ChangeNotifier {
 
   Future<ProfileModel?> addUserToDb() async {
     isLoading = true;
+    notifyListeners();
+
     FirebaseFirestore client = FirebaseFirestore.instance;
     FirebaseAuth auth = FirebaseAuth.instance;
-    await setToken();
 
     try {
-      isLoading = true;
-      var user = (await auth.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: signupPasswordController.text));
-      if (user.user != null) {
-        await uploadFiles(user.user!.uid);
+      var userCredential = await auth.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: signupPasswordController.text,
+      );
+
+      if (userCredential.user != null) {
+        await uploadFiles(userCredential.user!.uid);
+
         var profileModel = ProfileModel(
           isDriverLicenseBackUploaded: true,
           isDriverLicenseFrontUploaded: true,
@@ -419,28 +397,31 @@ class AuthProvider extends ChangeNotifier {
           vehicleYear: int.parse(vehicleYearController.text),
           createdAt: Timestamp.now(),
         );
-        await client.collection('drivers').doc(user.user!.uid).set(
-              profileModel.toJson(),
-            );
-        FirebaseChatCore.instance
-            .setConfig(FirebaseChatCoreConfig(null, "rooms", "chatUsers"));
-        await FirebaseChatCore.instance.createUserInFirestore(types.User(
-            id: auth.currentUser!.uid,
-            firstName: nameController.text,
-            lastName: familyNameController.text,
-            imageUrl: ""));
+
+        await client.collection('drivers').doc(userCredential.user!.uid).set(profileModel.toJson());
+
         currentUser = profileModel;
         isLoading = false;
+        notifyListeners();
         return profileModel;
       }
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       isLoading = false;
-
-      throw Exception(e);
+      notifyListeners();
+      if (e.code == 'email-already-in-use') {
+        print('The email address is already in use by another account.');
+        _exception = "Bu E-mail adresi artıq qeydiyyatdan keçib.";
+        throw Exception('Bu E-mail adresi artıq qeydiyyatdan keçib.');
+      } else {
+        print('An unknown error occurred: $e');
+        _exception = "Bilinmənən bir xəta yarandı";
+        throw Exception('Bilinmənən bir xəta yarandı');
+      }
     }
 
     isLoading = false;
-    throw Exception("User could not created");
+    notifyListeners();
+    throw Exception("User could not be created");
   }
 
   Future<ProfileModel?> updateUserToDb() async {

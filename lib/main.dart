@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -18,6 +18,7 @@ import 'package:face_camera/face_camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +40,7 @@ void main() async {
         channelGroupKey: 'reminders',
         channelKey: 'instant_notification',
         channelName: 'Basic Instant Notification',
-        channelDescription:
-            'Notification channel that can trigger notification instantly.',
+        channelDescription: 'Notification channel that can trigger notification instantly.',
         defaultColor: const Color(0xff32485E),
         importance: NotificationImportance.High,
         playSound: false,
@@ -59,13 +59,11 @@ Future<void> initializeService() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'my_foreground', // id
     'MY FOREGROUND SERVICE', // title
-    description:
-        'This channel is used for important notifications.', // description
+    description: 'This channel is used for important notifications.', // description
     importance: Importance.low, // importance must be at low or higher level
   );
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   if (Platform.isIOS || Platform.isAndroid) {
     await flutterLocalNotificationsPlugin.initialize(
@@ -76,8 +74,7 @@ Future<void> initializeService() async {
   }
 
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   await service.configure(
@@ -140,8 +137,7 @@ void onStart(ServiceInstance service) async {
   await Firebase.initializeApp();
 
   /// OPTIONAL when use custom notification
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
@@ -161,16 +157,13 @@ void onStart(ServiceInstance service) async {
   Timer.periodic(const Duration(seconds: 5), (timer) async {
     FirebaseFirestore.instance
         .collection('rooms')
-        .where('userIds', arrayContainsAny: [
-          FirebaseChatCore.instance.firebaseUser?.uid.toString() ?? ""
-        ])
+        .where('userIds', arrayContainsAny: [FirebaseChatCore.instance.firebaseUser?.uid.toString() ?? ""])
         .snapshots()
         .listen((snapshot) {
           for (var change in snapshot.docChanges) {
             bool notificationSentmessage = false;
 
-            if (change.type == DocumentChangeType.modified &&
-                !notificationSentmessage) {
+            if (change.type == DocumentChangeType.modified && !notificationSentmessage) {
               var modifiedData = change.doc.data();
               print(modifiedData!['userIds'][1]);
 
@@ -190,12 +183,7 @@ void onStart(ServiceInstance service) async {
 
     if (docId != null) {
       for (String docId in docId!) {
-        FirebaseFirestore.instance
-            .collection('routes')
-            .doc(docId)
-            .collection('requests')
-            .snapshots()
-            .listen((snapshot) {
+        FirebaseFirestore.instance.collection('routes').doc(docId).collection('requests').snapshots().listen((snapshot) {
           for (var change in snapshot.docChanges) {
             bool notificationSent = false;
             if (change.type == DocumentChangeType.modified) {

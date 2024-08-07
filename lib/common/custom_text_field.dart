@@ -11,12 +11,14 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? inputType;
   final String? Function(String? val)? validator;
   final bool? isSecureText;
+  final Function(String val)? onChanged;
   final VoidCallback? suffixIconPressed;
   final VoidCallback? prefixIconPressed;
   final bool? enabled;
   final bool? readOnly;
   final int? maxLine;
   final int? maxCharacter;
+  final String? error;
   final int? minCharacter;
   final VoidCallback? onTap;
   final TextStyle? style;
@@ -39,6 +41,8 @@ class CustomTextField extends StatelessWidget {
     this.minCharacter,
     this.onTap,
     this.style,
+    this.error,
+    this.onChanged,
   }) : super(key: key);
 //
   @override
@@ -48,6 +52,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       onTap: onTap,
       enabled: enabled,
+      onChanged: onChanged,
       validator: validator,
       keyboardType: inputType,
       obscureText: isSecureText ?? false,
@@ -65,6 +70,17 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(color: AppColors.primaryColor),
         ),
         hintText: hintText,
+        error: error == null
+            ? null
+            : Text(
+                error ?? "",
+                style: TextStyle(color: Colors.red),
+              ),
+        errorBorder: error == null
+            ? null
+            : UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
         hintStyle: AppFonts.generalTextThemeWithTransparancy(Colors.black),
         suffixIcon: suffixIcon == null
             ? null

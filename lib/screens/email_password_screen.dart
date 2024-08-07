@@ -1,21 +1,15 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:driver/common/app_fonts.dart';
 import 'package:driver/common/custom_text_field.dart';
 import 'package:driver/models/state_model.dart';
 import 'package:driver/providers/auth_provider.dart';
 import 'package:driver/providers/route_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
-
-import '../common/app_colors.dart';
 
 class EmailPasswordScreen extends StatefulWidget {
   const EmailPasswordScreen({super.key});
@@ -55,8 +49,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           children: [
                             Text(
                               "Şəxsiyyət məlumatlarınız alınacaq.",
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold),
+                              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
                               height: 16,
@@ -77,15 +70,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       child: CustomTextField(
                         controller: authProvider.emailController,
                         hintText: 'E-poçt',
-                        validator: (value) {
-                          if (value == null) {
-                            return "This field is required";
-                          } else if (!RegExp(
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                              .hasMatch(value)) {
-                            return "E-poçt ünvanı doğru deyil";
-                          }
-                        },
+                        onChanged: (value) => authProvider.updateEmail(value),
+                        error: authProvider.emailError,
                       ),
                     ),
                     SizedBox(
@@ -108,8 +94,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             setState(() {
                               numberInitialCode = number.isoCode.toString();
                             });
-                            print(number.phoneNumber.toString() +
-                                " onInputChanged");
+                            print(number.phoneNumber.toString() + " onInputChanged");
                             authProvider.selectedPhoneCode = number.dialCode;
                           },
                           onInputValidated: (bool value) {
@@ -124,8 +109,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             isoCode: numberInitialCode,
                           ),
                           textFieldController: authProvider.phoneController,
-                          keyboardType: TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
+                          keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
                           validator: null,
                           onSaved: (PhoneNumber number) {
                             print('On Saved: $number');
@@ -139,21 +123,19 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 48.0, right: 48),
                       child: CustomTextField(
-                        controller: TextEditingController(
-                            text: authProvider.city?.title ?? ""),
+                        controller: TextEditingController(text: authProvider.city?.title ?? ""),
                         hintText: "Şəhər",
                         readOnly: true,
                         onTap: () {
                           showMaterialSelectionPicker<StateModel?>(
                             context: context,
                             title: 'Şəhər',
-                            items: StateModel.townModels
-                                .followedBy(StateModel.villageModels)
-                                .followedBy(StateModel.subwayStationModels)
-                                .toList(),
+                            items: StateModel.townModels.followedBy(StateModel.villageModels).followedBy(StateModel.subwayStationModels).toList(),
                             transformer: (item) => (item?.title),
                             iconizer: (item) => item?.icon,
                             selectedItem: authProvider.city,
+                            cancelText: "Ləğv et",
+                            confirmText: "Təsdiqlə",
                             onChanged: (value) => setState(() {
                               authProvider.city = value;
                             }),
@@ -169,19 +151,16 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       child: CustomTextField(
                         controller: authProvider.signupPasswordController,
                         hintText: 'Şifrə',
-                        isSecureText:
-                            authProvider.isPasswordVisible ? false : true,
-                        suffixIcon: Icon(authProvider.isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off),
+                        isSecureText: authProvider.isPasswordVisible ? false : true,
+                        suffixIcon: Icon(authProvider.isPasswordVisible ? Icons.visibility : Icons.visibility_off),
                         suffixIconPressed: () {
-                          authProvider.isPasswordVisible =
-                              !authProvider.isPasswordVisible;
+                          authProvider.isPasswordVisible = !authProvider.isPasswordVisible;
                         },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'This field is required';
                           }
+                          return null;
                         },
                       ),
                     ),
@@ -190,18 +169,13 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       child: CustomTextField(
                         controller: authProvider.signupPasswordAgainController,
                         hintText: 'Yenidən Şifrə',
-                        isSecureText:
-                            authProvider.isPasswordVisible ? false : true,
-                        suffixIcon: Icon(authProvider.isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off),
+                        isSecureText: authProvider.isPasswordVisible ? false : true,
+                        suffixIcon: Icon(authProvider.isPasswordVisible ? Icons.visibility : Icons.visibility_off),
                         suffixIconPressed: () {
-                          authProvider.isPasswordVisible =
-                              !authProvider.isPasswordVisible;
+                          authProvider.isPasswordVisible = !authProvider.isPasswordVisible;
                         },
                         validator: (value) {
-                          if (value !=
-                              authProvider.signupPasswordController.text) {
+                          if (value != authProvider.signupPasswordController.text) {
                             return 'Passwords should match';
                           }
                         },
@@ -213,10 +187,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         alignment: AlignmentDirectional.topStart,
                         child: Text(
                           "*Şifrə ən az 6 xanali olmalıdır",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w300),
+                          style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w300),
                         ),
                       ),
                     ),
@@ -240,12 +211,10 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                     color: Colors.blue,
                                     decoration: TextDecoration.underline,
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = onTermsAndTap,
+                                  recognizer: TapGestureRecognizer()..onTap = onTermsAndTap,
                                 ),
                                 TextSpan(
-                                  text:
-                                      ' and confirm that you have read and understood the ',
+                                  text: ' and confirm that you have read and understood the ',
                                 ),
                                 TextSpan(
                                   text: 'Privacy Policy for Drivers',
@@ -253,12 +222,10 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                     color: Colors.blue,
                                     decoration: TextDecoration.underline,
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = onPrivacyTap,
+                                  recognizer: TapGestureRecognizer()..onTap = onPrivacyTap,
                                 ),
                                 TextSpan(
-                                  text:
-                                      ' applicable for your country of operation.',
+                                  text: ' applicable for your country of operation.',
                                 ),
                               ],
                             ),
@@ -289,8 +256,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
     _overlayEntry = OverlayEntry(
         builder: (context) => Dialog(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
@@ -313,10 +279,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         ),
                         Expanded(
                           child: FutureBuilder(
-                            future: Future.delayed(Duration(milliseconds: 150))
-                                .then((value) {
-                              return rootBundle
-                                  .loadString('assets/widgets/$doc.md');
+                            future: Future.delayed(Duration(milliseconds: 150)).then((value) {
+                              return rootBundle.loadString('assets/widgets/$doc.md');
                             }),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {

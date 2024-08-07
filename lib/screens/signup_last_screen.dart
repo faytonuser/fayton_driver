@@ -40,6 +40,7 @@ class SignupLastScreen extends StatelessWidget {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
                 }
+                return null;
               },
             ),
           ),
@@ -52,6 +53,7 @@ class SignupLastScreen extends StatelessWidget {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
                 }
+                return null;
               },
             ),
           ),
@@ -64,6 +66,7 @@ class SignupLastScreen extends StatelessWidget {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
                 }
+                return null;
               },
             ),
           ),
@@ -76,6 +79,7 @@ class SignupLastScreen extends StatelessWidget {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
                 }
+                return null;
               },
             ),
           ),
@@ -100,9 +104,9 @@ class SignupLastScreen extends StatelessWidget {
                 if (authProvider.fronDriverLicense == null) {
                   return 'This field is required';
                 }
+                return null;
               },
-              controller: TextEditingController(
-                  text: authProvider.fronDriverLicense?.path ?? ""),
+              controller: TextEditingController(text: authProvider.fronDriverLicense?.path ?? ""),
               hintText: 'Front License',
               suffixIcon: const FaIcon(FontAwesomeIcons.file),
               suffixIconPressed: () async {
@@ -121,13 +125,13 @@ class SignupLastScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 48.0, right: 48),
             child: CustomTextField(
-              controller: TextEditingController(
-                  text: authProvider.backDriverLicense?.path ?? ""),
+              controller: TextEditingController(text: authProvider.backDriverLicense?.path ?? ""),
               hintText: 'Back License',
               validator: (value) {
                 if (authProvider.backDriverLicense == null) {
                   return 'This field is required';
                 }
+                return null;
               },
               readOnly: true,
               suffixIcon: const FaIcon(FontAwesomeIcons.file),
@@ -147,8 +151,7 @@ class SignupLastScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 48.0, right: 48),
             child: CustomTextField(
-              controller: TextEditingController(
-                  text: authProvider.facePhoto?.path ?? ""),
+              controller: TextEditingController(text: authProvider.facePhoto?.path ?? ""),
               hintText: 'Face Photo',
               readOnly: true,
               suffixIcon: FaIcon(FontAwesomeIcons.file),
