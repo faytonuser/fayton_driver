@@ -20,6 +20,7 @@ class LoginScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Form(
           key: _formkey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -31,9 +32,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround, crossAxisAlignment: CrossAxisAlignment.center, children: [
-              // SizedBox(
-              //   height: 60,
-              // ),
               Padding(
                 padding: EdgeInsets.only(left: 48, right: 48, bottom: 12),
                 child: Image.asset(
@@ -53,70 +51,41 @@ class LoginScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 48, right: 48),
                 child: CustomTextField(
-                  inputType: TextInputType.emailAddress,
                   controller: authProvider.emailController,
-                  hintText: 'E-poçt',
+                  hintText: "E-poçt",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
                   validator: (value) {
                     if (value == null) {
                       return "Bu sahə tələb olunur";
                     } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                       return "E-poçt ünvanı doğru deyil";
                     }
+                    return null;
                   },
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'This field is required';
-                  //   }
-                  // },
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
                 child: CustomTextField(
                   controller: authProvider.passwordController,
                   hintText: 'Parol',
+                  validator: (value) {
+                    if (value == null) {
+                      return "Bu sahə tələb olunur";
+                    } else if (value.length < 6) {
+                      return "Parol minimum 6 simvol olmalıdır";
+                    }
+                    return null;
+                  },
                   isSecureText: authProvider.isPasswordVisible ? false : true,
                   suffixIcon: Icon(authProvider.isPasswordVisible ? Icons.visibility : Icons.visibility_off),
                   suffixIconPressed: () {
                     authProvider.isPasswordVisible = !authProvider.isPasswordVisible;
                   },
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'This field is required';
-                  //   }
-                  // },
                 ),
               ),
-              // Padding(
-              //   padding: EdgeInsets.only(left: 48, right: 48),
-              //   child: InternationalPhoneNumberInput(
-              //     onInputChanged: (PhoneNumber number) {
-              //       print(number.phoneNumber);
-              //       authProvier.phoneNumber = number.phoneNumber;
-              //     },
-              //     onInputValidated: (bool value) {
-              //       print(value);
-              //     },
-              //     selectorConfig: SelectorConfig(
-              //       selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-              //     ),
-              //     ignoreBlank: false,
-              //     autoValidateMode: AutovalidateMode.onUserInteraction,
-              //     selectorTextStyle: TextStyle(color: Colors.black),
-              //     textFieldController: authProvier.phoneController,
-              //     formatInput: true,
-              //     keyboardType: TextInputType.numberWithOptions(
-              //         signed: true, decimal: true),
-              //     inputBorder: UnderlineInputBorder(
-              //       borderSide:
-              //           BorderSide(color: AppColors.primaryColor, width: 0.5),
-              //     ),
-              //     onSaved: (PhoneNumber number) {
-              //       print('On Saved: $number');
-              //     },
-              //   ),
-              // ),
               SizedBox(
                 height: 30,
               ),
@@ -164,7 +133,6 @@ class LoginScreen extends StatelessWidget {
                 ]),
               ),
               const SizedBox(height: 6),
-
               GestureDetector(
                 onTap: () {
                   Navigator.push(

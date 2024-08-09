@@ -70,8 +70,6 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       child: CustomTextField(
                         controller: authProvider.emailController,
                         hintText: 'E-poçt',
-                        onChanged: (value) => authProvider.updateEmail(value),
-                        error: authProvider.emailError,
                       ),
                     ),
                     SizedBox(

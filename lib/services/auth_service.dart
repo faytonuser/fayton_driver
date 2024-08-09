@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/models/profile_model.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
@@ -23,17 +22,15 @@ class AuthService {
         return ProfileModel.fromJson((user.data() ?? {}));
       }
     } catch (e) {
+      print("authService: getCurrentUser: $e");
       throw Exception(e);
     }
     return null;
   }
 
-  static Future setLocation(
-      String userId, double latitude, double longitude) async {
+  static Future setLocation(String userId, double latitude, double longitude) async {
     try {
-      firestore.collection("drivers").doc(userId).set(
-          {"latitude": latitude, "longitude": longitude},
-          SetOptions(merge: true));
+      firestore.collection("drivers").doc(userId).set({"latitude": latitude, "longitude": longitude}, SetOptions(merge: true));
     } catch (e) {
       throw Exception(e);
     }
@@ -41,10 +38,7 @@ class AuthService {
 
   static Future setDeviceToken(String userId, String deviceToken) async {
     try {
-      firestore
-          .collection("drivers")
-          .doc(userId)
-          .set({"deviceToken": deviceToken}, SetOptions(merge: true));
+      firestore.collection("drivers").doc(userId).set({"deviceToken": deviceToken}, SetOptions(merge: true));
     } catch (e) {
       throw Exception(e);
     }

@@ -263,6 +263,12 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> doesNameAlreadyExist(String name) async {
+    final QuerySnapshot result = await FirebaseFirestore.instance.collection('company').where('name', isEqualTo: name).limit(1).get();
+    final List<DocumentSnapshot> documents = result.docs;
+    return documents.length == 1;
+  }
+
   Future<bool> signInWithEmail() async {
     try {
       isLoading = true;
