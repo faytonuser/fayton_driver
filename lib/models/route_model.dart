@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/models/profile_model.dart';
-import 'package:driver/models/state_model.dart';
 
 class RouteModel {
   final DateTime startDate;

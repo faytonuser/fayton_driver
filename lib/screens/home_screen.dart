@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
           RouteService.getRouteList(authProvider.currentUserId() ?? "", true);
     });
     var requestProvider = Provider.of<RequestProvider>(context, listen: false);
-    requestProvider.getRequestList(authProvider.currentUser!.userId);
+    // requestProvider.getRequestList(authProvider.currentUser!.userId);
     super.initState();
   }
 

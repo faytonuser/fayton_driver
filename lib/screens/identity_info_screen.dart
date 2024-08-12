@@ -129,40 +129,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 8,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 36.0, right: 48),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            authProvider.isCheck = !authProvider.isCheck;
-                          });
-                        },
-                        icon: Icon(
-                          authProvider.isCheck ? Icons.check_box_outlined : Icons.check_box_outline_blank_outlined,
-                          color: Colors.grey,
-                        )),
-                    Expanded(
-                      child: Text(
-                        "Sürəcəyim maşınım var",
-                        style: AppFonts.generalTextTheme(Colors.black54),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: Divider(
-                  color: AppColors.primaryColor,
-                  thickness: 0.5,
-                ),
-              ),
+
               SizedBox(
                 height: 8,
               ),
@@ -186,10 +153,14 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
                 child: CustomTextField(
                   controller: authProvider.plateController,
-                  hintText: 'Aftomobilin seriya nomresi',
+                  hintText: 'Avtomobilin seriya nömrəsi',
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.length > 8) {
-                      return 'This field is more than 8 chars';
+                    String pattern = r'^\d{2}[A-Z]{2}\d{3}$';
+                    RegExp regExp = RegExp(pattern);
+                    if (value == null || value.isEmpty) {
+                      return 'Mətn daxil edin';
+                    } else if (!regExp.hasMatch(value)) {
+                      return 'Düzgün format daxil edin: 99BB999';
                     }
                     return null;
                   },
@@ -205,7 +176,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                   hintText: 'Avtomobilin istehsalçısı və modeli',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'This field is required';
+                      return 'Bu hissə məcburidir.';
                     }
                     return null;
                   },
@@ -219,7 +190,7 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                   hintText: 'Avtomobil ili (Exp. 1994, 2004, 2023..)',
                   validator: (value) {
                     if (value == null || value.isEmpty || value.length > 4) {
-                      return 'This field is more than 4 chars';
+                      return 'Avtomobilin ili maksiumum 4 rəqəmli ola bilər.';
                     }
                     return null;
                   },

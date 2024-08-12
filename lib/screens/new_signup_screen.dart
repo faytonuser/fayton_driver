@@ -29,6 +29,7 @@ class NewSignupScreen extends StatelessWidget {
   }
 
   PageController _pageController = PageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     var authProvider = Provider.of<AuthProvider>(context);
@@ -44,6 +45,7 @@ class NewSignupScreen extends StatelessWidget {
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 onPageChanged: (int index) {
+                  authProvider.currentPageIndex = index;
                   if (index == 0) {
                   } else if (index == 1) {
                     authProvider.verifyStep = false;
@@ -69,6 +71,11 @@ class NewSignupScreen extends StatelessWidget {
                     authProvider.vehicleDetailStep = false;
                     authProvider.driverBackStep = false;
                     authProvider.driverFrontStep = false;
+                    // print("verifySecondStep ${authProvider.lastStep}");
+                    // print("verifyStep ${authProvider.verifyStep}");
+                    // print("verifySecondStep ${authProvider.verifySecondStep}");
+                    // print("vehicleDetailStep ${authProvider.vehicleDetailStep}");
+                    // print("driverFrontStep ${authProvider.driverFrontStep}");
                   }
                 },
                 controller: _pageController,
@@ -98,9 +105,12 @@ class NewSignupScreen extends StatelessWidget {
                   authProvider.lastStep
                       ? "Bitdi"
                       : authProvider.verifyStep
-                          ? "Abunə olun"
+                          ? "Davam et"
                           : "Davam et",
-                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                  style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700),
                 ),
               ),
               loader: Container(
@@ -112,10 +122,20 @@ class NewSignupScreen extends StatelessWidget {
               onTap: (startLoading, stopLoading, btnState) async {
                 try {
                   startLoading();
-
-                  if (authProvider.driverBackStep == true) {
+                  if (authProvider.currentPageIndex == 0) {
+                    if (authProvider.emailPasswordFormKey.currentState?.validate() ?? false) {
+                      _pageController.nextPage(
+                          duration: Duration(seconds: 1), curve: Curves.easeIn);
+                      authProvider.activeStep = _pageController.page?.toInt();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Zəhmət olmasa, bütün sahələri düzgün doldurun')),
+                      );
+                    }
+                  } else if (authProvider.driverBackStep == true) {
                     if (authProvider.backDriverLicense != null) {
-                      _pageController.nextPage(duration: Duration(seconds: 1), curve: Curves.easeIn);
+                      _pageController.nextPage(
+                          duration: Duration(seconds: 1), curve: Curves.easeIn);
                       authProvider.activeStep = _pageController.page?.toInt();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -124,7 +144,8 @@ class NewSignupScreen extends StatelessWidget {
                     }
                   } else if (authProvider.driverFrontStep == true) {
                     if (authProvider.fronDriverLicense != null) {
-                      _pageController.nextPage(duration: Duration(seconds: 1), curve: Curves.easeIn);
+                      _pageController.nextPage(
+                          duration: Duration(seconds: 1), curve: Curves.easeIn);
                       authProvider.activeStep = _pageController.page?.toInt();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -144,24 +165,30 @@ class NewSignupScreen extends StatelessWidget {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => VerificationWaitingScreen(currentUser: authProvider.currentUser),
+                            builder: (_) => VerificationWaitingScreen(
+                                currentUser: authProvider.currentUser),
                           ),
-                          (route) => false,
+                              (route) => false,
                         );
                       }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Zəhmət olmasa, bütün sahələri düzgün doldurun")),
+                      );
                     }
                   } else if (authProvider.lastStep == true) {
                     if (authProvider.facePhoto != null) {
-                      if (authProvider.fronDriverLicense != null && authProvider.backDriverLicense != null) {
+                      if (authProvider.fronDriverLicense != null &&
+                          authProvider.backDriverLicense != null) {
                         var response = await authProvider.addUserToDb();
-
                         if (response != null) {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => VerificationWaitingScreen(currentUser: authProvider.currentUser),
+                              builder: (_) => VerificationWaitingScreen(
+                                  currentUser: authProvider.currentUser),
                             ),
-                            (route) => false,
+                                (route) => false,
                           );
                         }
                         stopLoading();
@@ -176,7 +203,8 @@ class NewSignupScreen extends StatelessWidget {
                       );
                     }
                   } else {
-                    _pageController.nextPage(duration: Duration(seconds: 1), curve: Curves.easeIn);
+                    _pageController.nextPage(
+                        duration: Duration(seconds: 1), curve: Curves.easeIn);
                     authProvider.activeStep = _pageController.page?.toInt();
                   }
                 } catch (e) {

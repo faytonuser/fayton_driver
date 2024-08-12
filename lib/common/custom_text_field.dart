@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final String? errorText;
   final FaIcon? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? inputType;
@@ -19,8 +20,10 @@ class CustomTextField extends StatelessWidget {
   final int? maxCharacter;
   final int? minCharacter;
   final VoidCallback? onTap;
+  final Function(String)? onTextChanged;
   final TextStyle? style;
   final bool? obsucure;
+
   const CustomTextField({
     Key? key,
     required,
@@ -41,11 +44,14 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.style,
     this.obsucure,
+    this.errorText,
+    this.onTextChanged,
   }) : super(key: key);
 //
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onTextChanged,
       readOnly: readOnly ?? false,
       controller: controller,
       onTap: onTap,
@@ -58,6 +64,7 @@ class CustomTextField extends StatelessWidget {
       minLines: 1,
       style: style,
       decoration: InputDecoration(
+        errorText: errorText,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primaryColor, width: 0.5),
         ),
@@ -67,7 +74,7 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(color: AppColors.primaryColor),
         ),
         hintText: hintText,
-        hintStyle: GoogleFonts.poppins(color: Colors.white70),
+        hintStyle: GoogleFonts.poppins(color: Colors.black54),
         suffixIcon: suffixIcon == null
             ? null
             : IconButton(

@@ -48,9 +48,9 @@ class ProfileWidget extends StatelessWidget {
             child: CircleAvatar(
               radius: 96,
               backgroundImage: CachedNetworkImageProvider(
-                authProvider.currentUser!.profileUrl ?? "",
+                authProvider.currentUser?.profileUrl ?? "",
               ),
-              child: authProvider.currentUser!.profileUrl == ""
+              child: authProvider.currentUser?.profileUrl == ""
                   ? GestureDetector(
                       onTap: () async {
                         var xFile = await _picker.pickImage(
@@ -63,7 +63,7 @@ class ProfileWidget extends StatelessWidget {
 
                         authProvider.currentUser =
                             await AuthService.getCurrentUser(
-                                authProvider.currentUser!.userId);
+                                authProvider.currentUser?.userId ?? "");
                       },
                       child: authProvider.isLoading
                           ? CustomWaitingIndicator()

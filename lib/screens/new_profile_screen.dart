@@ -10,6 +10,7 @@ import 'package:driver/providers/request_provider.dart';
 import 'package:driver/providers/route_provider.dart';
 import 'package:driver/screens/completed_ride_screen.dart';
 import 'package:driver/screens/driver_license_front_screen.dart';
+import 'package:driver/screens/login_screen.dart';
 import 'package:driver/screens/profile_widget.dart';
 import 'package:driver/services/auth_service.dart';
 import 'package:driver/services/root_service.dart';
@@ -39,15 +40,13 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
           RouteService.getRouteList(authProvider.currentUserId() ?? "", true);
     });
     var requestProvider = Provider.of<RequestProvider>(context, listen: false);
-    requestProvider.getRequestList(authProvider.currentUser!.userId);
+    // requestProvider.getRequestList(authProvider.currentUser?.userId ?? "");
     super.initState();
   }
 
-  String formatDate(timestamp) {
+  String formatDate(Timestamp? timestamp) {
     var now = DateTime.now();
-    final Timestamp firebaseTimestamp =
-        Timestamp.fromMillisecondsSinceEpoch(timestamp);
-    var date = firebaseTimestamp.toDate();
+    var date = timestamp?.toDate() ?? DateTime.now() ;
     var difference = now.difference(date);
 
     if (difference.inDays > 0) {
@@ -62,46 +61,55 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
   }
 
   var _imagePicker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
-    var authProvider = Provider.of<AuthProvider>(context);
+    var authProvider = context.read<AuthProvider>();
     var routeProvider = Provider.of<RouteProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: authProvider.currentUser!.isVerified
-                ? Icon(
-                    Icons.verified,
-                    color: Colors.green,
-                  )
-                : (authProvider.currentUser!.isVerified == false &&
-                        authProvider.currentUser!.isDriverLicenseBackUploaded ==
-                            true)
-                    ? Icon(
-                        Icons.alarm,
-                        color: Colors.grey,
-                      )
-                    : Icon(
-                        Icons.verified,
-                        color: Colors.grey,
-                      ),
-            onPressed: () {},
-          ),
-          backgroundColor: Color(0xff502eb2),
-          actions: [
-            GestureDetector(
-              onTap: () async {
-                await auth.FirebaseAuth.instance.signOut();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.logout,
-                  color: Colors.white,
+        leading: IconButton(
+          icon: authProvider.currentUser?.isVerified ?? false
+              ? Icon(
+                  Icons.verified,
+                  color: Colors.green,
+                )
+              : (authProvider.currentUser?.isVerified == false &&
+                      authProvider.currentUser!.isDriverLicenseBackUploaded ==
+                          true)
+                  ? Icon(
+                      Icons.alarm,
+                      color: Colors.grey,
+                    )
+                  : Icon(
+                      Icons.verified,
+                      color: Colors.grey,
+                    ),
+          onPressed: () {},
+        ),
+        backgroundColor: Color(0xff502eb2),
+        actions: [
+          GestureDetector(
+            onTap: () async {
+              await auth.FirebaseAuth.instance.signOut();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginScreen(),
                 ),
+                ModalRoute.withName('/home'),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.logout,
+                color: Colors.white,
               ),
-            )
-          ]),
+            ),
+          ),
+        ],
+      ),
       body: routeProvider.routesFuture == null
           ? Center(
               child: CustomWaitingIndicator(),
@@ -124,79 +132,55 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                         end: Alignment.bottomCenter,
                       ),
                     ),
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Stack(
-                            children: [
-                              SizedBox(
-                                height: 196,
-                                width: 196,
-                                child: ProfileWidget(
-                                  profileUrl:
-                                      "https://i0.wp.com/www.cssscript.com/wp-content/uploads/2020/12/Customizable-SVG-Avatar-Generator-In-JavaScript-Avataaars.js.png?fit=438%2C408&ssl=1",
-                                ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                        ),
+                        Stack(
+                          children: [
+                            SizedBox(
+                              height: 196,
+                              width: MediaQuery.of(context).size.width,
+                              child: ProfileWidget(
+                                profileUrl:
+                                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                               ),
-                              Positioned(
-                                bottom: 0,
-                                width: 196,
-                                left: 61,
-                                child: Container(
-                                  height: 70,
-                                  child: CircleAvatar(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Image.asset(
-                                        'assets/icons/car.png',
-                                        //           color: Colors.red,
-                                      ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              width: 196,
+                              left: 61,
+                              child: Container(
+                                height: 70,
+                                child: CircleAvatar(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.asset(
+                                      'assets/icons/car.png',
+                                      //           color: Colors.red,
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          TextButton.icon(
-                            onPressed: () async {
-                              await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return SimpleDialog(
-                                    //  title: const Text('Düzenle'),
-                                    contentPadding: EdgeInsets.all(10),
-                                    children: <Widget>[
-                                      SimpleDialogOption(
-                                          padding: const EdgeInsets.all(5),
-                                          child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 15, horizontal: 5),
-                                              child: const Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text('Parolunuzu Yeniləyin'),
-                                                  Icon(Icons.key)
-                                                ],
-                                              )),
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                                    builder: (context) {
-                                              return const EditProfileScreen(
-                                                editType: 'password',
-                                              );
-                                            }));
-                                          }),
-                                      SimpleDialogOption(
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        TextButton.icon(
+                          onPressed: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SimpleDialog(
+                                  //  title: const Text('Düzenle'),
+                                  contentPadding: EdgeInsets.all(10),
+                                  children: <Widget>[
+                                    SimpleDialogOption(
                                         padding: const EdgeInsets.all(5),
                                         child: Container(
                                             padding: EdgeInsets.symmetric(
@@ -206,330 +190,351 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Text(
-                                                    'Profil şəklini dəyişdirin'),
+                                                Text('Parolunuzu Yeniləyin'),
+                                                Icon(Icons.key)
+                                              ],
+                                            )),
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return const EditProfileScreen(
+                                              editType: 'password',
+                                            );
+                                          }));
+                                        }),
+                                    SimpleDialogOption(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 5),
+                                          child: const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text('Profil şəklini dəyişdirin'),
+                                              Icon(Icons.clear)
+                                            ],
+                                          )),
+                                      onPressed: () async {
+                                        var xFile =
+                                            await _imagePicker.pickImage(
+                                                source: ImageSource.camera,
+                                                preferredCameraDevice:
+                                                    CameraDevice.front);
+                                        if (xFile == null) return;
+                                        var convertedFile = File(xFile.path);
+                                        authProvider.uploadProfilePicture(
+                                            convertedFile);
+                                        authProvider.currentUser =
+                                            await AuthService.getCurrentUser(
+                                                authProvider
+                                                        .currentUser?.userId ??
+                                                    "");
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    authProvider.currentUser?.isVerified ??
+                                            false
+                                        ? SizedBox()
+                                        : (authProvider.currentUser
+                                                    ?.isDriverLicenseBackUploaded ??
+                                                false)
+                                            ? SizedBox()
+                                            : SimpleDialogOption(
+                                                padding:
+                                                    const EdgeInsets.all(5),
+                                                child: Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 15,
+                                                            horizontal: 5),
+                                                    child: const Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text('Hesabı Onayla'),
+                                                        Icon(Icons.clear)
+                                                      ],
+                                                    )),
+                                                onPressed: () async {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          FronDriverLicenseScreen(),
+                                                    ),
+                                                  );
+                                                }),
+                                    SimpleDialogOption(
+                                        padding: const EdgeInsets.all(5),
+                                        child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 15, horizontal: 5),
+                                            child: const Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text('Hesabı Sil'),
                                                 Icon(Icons.clear)
                                               ],
                                             )),
                                         onPressed: () async {
-                                          var xFile =
-                                              await _imagePicker.pickImage(
-                                                  source: ImageSource.camera,
-                                                  preferredCameraDevice:
-                                                      CameraDevice.front);
-                                          if (xFile == null) return;
-
-                                          var convertedFile = File(xFile.path);
-                                          authProvider.uploadProfilePicture(
-                                              convertedFile);
-
-                                          authProvider.currentUser =
-                                              await AuthService.getCurrentUser(
-                                                  authProvider
-                                                      .currentUser!.userId);
                                           Navigator.of(context).pop();
-                                        },
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return const EditProfileScreen(
+                                              editType: 'delete',
+                                            );
+                                          }));
+                                        }),
+                                    SimpleDialogOption(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Container(
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                            color: AppColors.primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 5),
+                                        child: const Center(
+                                            child: Text(
+                                          "Yaxın",
+                                          style:
+                                              TextStyle(color: Colors.white70),
+                                        )),
                                       ),
-                                      authProvider.currentUser!.isVerified
-                                          ? SizedBox()
-                                          : (authProvider.currentUser!
-                                                      .isDriverLicenseBackUploaded ??
-                                                  false)
-                                              ? SizedBox()
-                                              : SimpleDialogOption(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  child: Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 15,
-                                                              horizontal: 5),
-                                                      child: const Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text('Hesabı Onayla'),
-                                                          Icon(Icons.clear)
-                                                        ],
-                                                      )),
-                                                  onPressed: () async {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            FronDriverLicenseScreen(),
-                                                      ),
-                                                    );
-                                                  }),
-                                      SimpleDialogOption(
-                                          padding: const EdgeInsets.all(5),
-                                          child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 15, horizontal: 5),
-                                              child: const Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text('Hesabı Sil'),
-                                                  Icon(Icons.clear)
-                                                ],
-                                              )),
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                                    builder: (context) {
-                                              return const EditProfileScreen(
-                                                editType: 'delete',
-                                              );
-                                            }));
-                                          }),
-                                      SimpleDialogOption(
-                                        padding: const EdgeInsets.all(5),
-                                        child: Container(
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                              color: AppColors.primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(15)),
-                                          padding:
-                                              EdgeInsets.symmetric(vertical: 5),
-                                          child: const Center(
-                                              child: Text(
-                                            "Yaxın",
-                                            style: TextStyle(
-                                                color: Colors.white70),
-                                          )),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: Colors.white70,
-                            ),
-                            label: Text(
-                              authProvider.currentUser!.name.toString() +
-                                  " " +
-                                  authProvider.currentUser!.lastName.toString(),
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white70),
-                            ),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.white70,
                           ),
-                          Text(
-                            authProvider.currentUser!.email.toString(),
+                          label: Text(
+                            "${authProvider.currentUser?.name.toString()} ${authProvider.currentUser?.lastName.toString()}",
                             style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Colors.black45),
+                                fontSize: 20,
+                                color: Colors.white70),
                           ),
-                          SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        ),
+                        Text(
+                          authProvider.currentUser?.email.toString() ?? '',
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: Colors.black45),
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
                             children: [
-                              Expanded(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: Center(
-                                      child: Column(
-                                    children: [
-                                      FittedBox(
-                                        child: Text(
-                                          authProvider
-                                                  .currentUser!.vehicleModel ??
-                                              "",
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
-                                        ),
-                                      ),
-                                      FittedBox(
-                                        child: Text(
-                                          authProvider.currentUser!.vehicleYear
-                                                  .toString() ??
-                                              "",
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
+                              // Vehicle Information Card
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
                                 ),
-                              ),
-                              Expanded(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
+                                child: Container(
+                                  width: 150, // Fixed width for the card
+                                  padding: EdgeInsets.all(8),
                                   child: Center(
-                                      child: Column(
-                                    children: [
-                                      FittedBox(
-                                        child: Text(
-                                          authProvider
-                                                  .currentUser!.plateNumber ??
-                                              "",
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
-                                        ),
-                                      ),
-                                      FittedBox(
-                                        child: Text(
-                                          authProvider.currentUser!.city
-                                                  .toString() ??
-                                              "",
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              "📌Avtomobilə minməzdən əvvəl həmişə sərnişinin adını soruşun və təsdiqləyin.",
-                              style: GoogleFonts.poppins(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => CompletedRideScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, right: 8),
                                     child: Column(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          snapshot.data!.length.toString(),
+                                          authProvider
+                                                  .currentUser?.vehicleModel ??
+                                              "",
                                           style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
                                         ),
-                                        Text("Rides"),
+                                        Text(
+                                          authProvider.currentUser?.vehicleYear
+                                                  .toString() ??
+                                              "",
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: 1,
-                                height: 25,
-                                color: Colors.grey,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        authProvider.currentUser!.rating != null
-                                            ? "★ " +
-                                                authProvider.currentUser!.rating
-                                                    .toString()
-                                            : "★ 0.0",
-                                        style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
-                                      ),
-                                      Text("Rating"),
-                                    ],
-                                  ),
+                              SizedBox(width: 8), // Add spacing between cards
+                              // Plate Number and City Card
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
                                 ),
-                              ),
-                              Container(
-                                width: 1,
-                                height: 25,
-                                color: Colors.grey,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
-                                  child: Column(
-                                    children: [
-                                      FittedBox(
-                                        child: Text(
-                                          formatDate(authProvider
-                                              .currentUser!
-                                              .createdAt!
-                                              .millisecondsSinceEpoch),
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          authProvider
+                                                  .currentUser?.plateNumber ??
+                                              "",
                                           style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Member since",
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    ],
+                                        Text(
+                                          authProvider.currentUser?.city
+                                                  .toString() ??
+                                              "",
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 50,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            "📌Avtomobilə minməzdən əvvəl həmişə sərnişinin adını soruşun və təsdiqləyin.",
+                            style: GoogleFonts.poppins(),
+                            textAlign: TextAlign.center,
                           ),
-                          Icon(Icons.favorite_outline),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 10,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => CompletedRideScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        snapshot.data!.length.toString(),
+                                        style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                      Text("Rides"),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
-                            child: Text(
-                              "RIDER COMPLIMENTS",
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            Container(
+                              width: 1,
+                              height: 25,
+                              color: Colors.grey,
                             ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, right: 8),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      authProvider.currentUser?.rating != null
+                                          ? "★ ${authProvider.currentUser?.rating}"
+                                          : "★ 0.0",
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                    Text("Rating"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 1,
+                              height: 25,
+                              color: Colors.grey,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, right: 8),
+                                child: Column(
+                                  children: [
+                                    FittedBox(
+                                      child: Text(
+                                        "${formatDate(authProvider.currentUser?.createdAt)}",
+                                        style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                    Text(
+                                      "Member since",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        Icon(Icons.favorite_outline),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 10,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 25,
-                            ),
-                            child: Container(
-                              height: 2,
-                              width: 96,
-                              color: Colors.black,
-                            ),
-                          )
-                        ],
-                      ),
+                          child: Text(
+                            "RIDER COMPLIMENTS",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 25,
+                          ),
+                          child: Container(
+                            height: 2,
+                            width: 96,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
                     ),
                   );
                 } else {

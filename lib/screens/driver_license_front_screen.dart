@@ -3,7 +3,6 @@ import 'package:driver/common/custom_button.dart';
 import 'package:driver/providers/auth_provider.dart';
 import 'package:driver/screens/camera_overlay_screen.dart';
 import 'package:driver/screens/end_driver_license_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';

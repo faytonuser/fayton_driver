@@ -84,7 +84,7 @@ Future<void> initializeService() async {
 
       // auto start service
       autoStart: true,
-      isForegroundMode: true,
+      isForegroundMode: false,
 
       notificationChannelId: 'my_foreground',
       initialNotificationTitle: 'AWESOME SERVICE',
@@ -130,6 +130,7 @@ void onStart(ServiceInstance service) async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   await preferences.setString("hello", "world");
 
+  // ignore: unused_local_variable
   String? onstartUserid;
   onstartUserid = preferences.getString('userid').toString();
 
@@ -137,7 +138,7 @@ void onStart(ServiceInstance service) async {
   await Firebase.initializeApp();
 
   /// OPTIONAL when use custom notification
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {

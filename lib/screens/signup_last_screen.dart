@@ -35,10 +35,10 @@ class SignupLastScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 48.0, right: 48),
             child: CustomTextField(
               controller: authProvider.nameController,
-              hintText: 'Name',
+              hintText: 'Ad',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'This field is required';
+                  return 'Bu hissə məcburidir';
                 }
                 return null;
               },
@@ -48,10 +48,10 @@ class SignupLastScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 48.0, right: 48),
             child: CustomTextField(
               controller: authProvider.familyNameController,
-              hintText: 'Family Name',
+              hintText: 'Soyad',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'This field is required';
+                  return 'Bu hissə məcburidir';
                 }
                 return null;
               },
@@ -61,10 +61,10 @@ class SignupLastScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 48.0, right: 48),
             child: CustomTextField(
               controller: authProvider.identityNumberController,
-              hintText: 'Identity Number',
+              hintText: 'İdentifikasiya nömrəsi',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'This field is required';
+                  return 'Bu hissə məcburidir';
                 }
                 return null;
               },

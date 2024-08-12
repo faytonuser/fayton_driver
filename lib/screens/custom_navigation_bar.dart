@@ -32,7 +32,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       desiredAccuracy: LocationAccuracy.best,
     ).then((value) {
       AuthService.setLocation(
-          authProvider.currentUser!.userId, value.latitude, value.longitude);
+          authProvider.currentUser?.userId ?? "", value.latitude, value.longitude);
     });
     super.initState();
   }
