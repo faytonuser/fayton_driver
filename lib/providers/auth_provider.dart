@@ -396,6 +396,8 @@ class AuthProvider extends ChangeNotifier {
       isLoading = false;
       return true;
     } on FirebaseAuthException catch (e) {
+
+      print("ERRORR CODEEEE __________________ +++   ${e.code}");
       isLoading = false;
       if (e.code == 'user-not-found') {
         throw Exception('Bu hesab mövcud deyil.');

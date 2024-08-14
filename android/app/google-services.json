@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "480796722790",
-    "project_id": "fayton-23e44",
-    "storage_bucket": "fayton-23e44.appspot.com"
+    "project_number": "595337492413",
+    "project_id": "fayton-fff5c",
+    "storage_bucket": "fayton-fff5c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:480796722790:android:843474d14a1e5dfe99cfa7",
+        "mobilesdk_app_id": "1:595337492413:android:8d5489c58198bdda2c84d4",
         "android_client_info": {
-          "package_name": "com.tr.bi.fayton"
+          "package_name": "com.fayton.user"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCOsR1Yx54QIfHRgyQdRF8kW-MazB-Kvu4"
+          "current_key": "AIzaSyCiWPbLCHkPlZyMweNnpVBUXzFxcxlWAO4"
         }
       ],
       "services": {
@@ -26,7 +26,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:480796722790:android:be442f717c2970b499cfa7",
+        "mobilesdk_app_id": "1:595337492413:android:2e3cec50826cab2a2c84d4",
         "android_client_info": {
           "package_name": "com.tr.bi.faytondriver"
         }
@@ -34,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCOsR1Yx54QIfHRgyQdRF8kW-MazB-Kvu4"
+          "current_key": "AIzaSyCiWPbLCHkPlZyMweNnpVBUXzFxcxlWAO4"
         }
       ],
       "services": {
