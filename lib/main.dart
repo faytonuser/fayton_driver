@@ -28,7 +28,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseHelper.setupFirebase();
   await NotificationService.initializeNotification();
-  await FaceCamera.intialize(); //Add this
+  await FaceCamera.initialize(); //Add this
   await initializeService();
 
   runApp(const MyApp());
