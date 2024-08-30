@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/common/custom_button.dart';
 import 'package:driver/common/custom_text_field.dart';
 import 'package:driver/providers/auth_provider.dart';
+import 'package:driver/widgets/car_model_year_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../common/app_colors.dart';
-import '../common/app_fonts.dart';
 
 class IdentityInfoScreen extends StatefulWidget {
   const IdentityInfoScreen({super.key});
@@ -16,12 +17,16 @@ class IdentityInfoScreen extends StatefulWidget {
 }
 
 class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
-  List<String> vehicleColorList = ["Blue", "Red", "Yellow", "Black", "White", "Green", "Orange", "Pink", "Brown", "Purple", "Grey"];
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var authProvider = Provider.of<AuthProvider>(context);
-
+    FirebaseFirestore fireStore = FirebaseFirestore.instance;
     return Scaffold(
       body: Form(
         key: authProvider.identityInfoFormKey,
@@ -129,26 +134,9 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                   ),
                 ),
               ),
-
               SizedBox(
                 height: 8,
               ),
-              /**          Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: CustomTextField(
-                  inputType: TextInputType.number,
-                  controller: authProvider.identityNumberController,
-                  hintText: 'Identity Number',
-                   validator: (value) {
-                     if (value == null || value.isEmpty || value.length > 16) {
-                       return 'This field is more than 16 chars';
-                     }
-                   },
-                ),
-              ),
-              SizedBox(
-                height: 8,
-              ),*/
               Padding(
                 padding: const EdgeInsets.only(left: 48.0, right: 48),
                 child: CustomTextField(
@@ -167,63 +155,9 @@ class _IdentityInfoScreenState extends State<IdentityInfoScreen> {
                 ),
               ),
               SizedBox(
-                height: 8,
+                height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: CustomTextField(
-                  controller: authProvider.manufaturerController,
-                  hintText: 'Avtomobilin istehsalçısı və modeli',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Bu hissə məcburidir.';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: CustomTextField(
-                  controller: authProvider.vehicleYearController,
-                  inputType: TextInputType.number,
-                  hintText: 'Avtomobil ili (Exp. 1994, 2004, 2023..)',
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length > 4) {
-                      return 'Avtomobilin ili maksiumum 4 rəqəmli ola bilər.';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: CustomTextField(
-                  controller: authProvider.vehicleModelController,
-                  inputType: TextInputType.text,
-                  hintText: 'Avtomobil Modeli (Exp. BMW, Mercedes vb..)',
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length > 15) {
-                      return 'This field is more than 15 chars';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 48.0, right: 48),
-                child: CustomTextField(
-                  controller: authProvider.vehicleColorController,
-                  inputType: TextInputType.text,
-                  hintText: 'Avtomobilin Rəngi',
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length > 12) {
-                      return 'This field is more than 12 chars';
-                    }
-                    return null;
-                  },
-                ),
-              ),
+            DependentDropdowns(),
               SizedBox(
                 height: 8,
               ),

@@ -1,3 +1,4 @@
+import 'package:driver/common/globals.dart';
 import 'package:driver/providers/auth_provider.dart';
 import 'package:driver/screens/email_password_screen.dart';
 import 'package:driver/screens/identity_info_screen.dart';
@@ -95,6 +96,9 @@ class NewSignupScreen extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              height: 12,
+            ),
             ArgonButton(
               height: 50,
               width: 150,
@@ -123,13 +127,18 @@ class NewSignupScreen extends StatelessWidget {
                 try {
                   startLoading();
                   if (authProvider.currentPageIndex == 0) {
-                    if (authProvider.emailPasswordFormKey.currentState?.validate() ?? false) {
+                    if (authProvider.emailPasswordFormKey.currentState
+                            ?.validate() ??
+                        false) {
                       _pageController.nextPage(
                           duration: Duration(seconds: 1), curve: Curves.easeIn);
                       authProvider.activeStep = _pageController.page?.toInt();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Zəhmət olmasa, bütün sahələri düzgün doldurun')),
+                        SnackBar(
+                          content: Text(
+                              'Zəhmət olmasa, bütün sahələri düzgün doldurun'),
+                        ),
                       );
                     }
                   } else if (authProvider.driverBackStep == true) {
@@ -139,7 +148,9 @@ class NewSignupScreen extends StatelessWidget {
                       authProvider.activeStep = _pageController.page?.toInt();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Sürücülük vəsiqənizin arxa hissəsini yükləyin!')),
+                        SnackBar(
+                            content: Text(
+                                'Sürücülük vəsiqənizin arxa hissəsini yükləyin!')),
                       );
                     }
                   } else if (authProvider.driverFrontStep == true) {
@@ -149,7 +160,9 @@ class NewSignupScreen extends StatelessWidget {
                       authProvider.activeStep = _pageController.page?.toInt();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Sürücülük vəsiqənizin ön hissəsini yükləyin!')),
+                        SnackBar(
+                            content: Text(
+                                'Sürücülük vəsiqənizin ön hissəsini yükləyin!')),
                       );
                     }
                   } else if (authProvider.verifySecondStep == true) {
@@ -159,7 +172,8 @@ class NewSignupScreen extends StatelessWidget {
                       authProvider.activeStep = _pageController.page?.toInt();
                     }
                   } else if (authProvider.vehicleDetailStep == true) {
-                    if (authProvider.identityInfoFormKey.currentState!.validate()) {
+                    if (authProvider.identityInfoFormKey.currentState!
+                        .validate() && isCarFormValid) {
                       var response = await authProvider.addUserToDb();
                       if (response != null) {
                         Navigator.pushAndRemoveUntil(
@@ -168,12 +182,14 @@ class NewSignupScreen extends StatelessWidget {
                             builder: (_) => VerificationWaitingScreen(
                                 currentUser: authProvider.currentUser),
                           ),
-                              (route) => false,
+                          (route) => false,
                         );
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Zəhmət olmasa, bütün sahələri düzgün doldurun")),
+                        SnackBar(
+                            content: Text(
+                                "Zəhmət olmasa, bütün sahələri düzgün doldurun")),
                       );
                     }
                   } else if (authProvider.lastStep == true) {
@@ -188,7 +204,7 @@ class NewSignupScreen extends StatelessWidget {
                               builder: (_) => VerificationWaitingScreen(
                                   currentUser: authProvider.currentUser),
                             ),
-                                (route) => false,
+                            (route) => false,
                           );
                         }
                         stopLoading();
@@ -217,8 +233,8 @@ class NewSignupScreen extends StatelessWidget {
               },
             ),
             SizedBox(
-              height: 56,
-            )
+              height: 12,
+            ),
           ],
         ),
       ),

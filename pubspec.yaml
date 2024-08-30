@@ -44,9 +44,10 @@ dependencies:
     provider: ^6.0.5
     image_picker: ^1.0.4
     flutter_spinkit: ^5.2.0
+    win32: ^5.5.4
     flare_flutter: ^3.0.2
     json_annotation:
-    flutter_local_notifications: ^16.1.0
+    flutter_local_notifications: ^17.2.2
     awesome_notifications: ^0.8.2
     flutter_background_service: ^5.0.5
     device_info_plus: ^9.1.2

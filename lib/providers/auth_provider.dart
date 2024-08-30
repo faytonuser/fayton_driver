@@ -374,6 +374,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+
   Future<bool> doesNameAlreadyExist(String name) async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('company')
@@ -402,6 +403,8 @@ class AuthProvider extends ChangeNotifier {
       if (e.code == 'user-not-found') {
         throw Exception('Bu hesab mövcud deyil.');
       } else if (e.code == 'wrong-password') {
+        throw Exception('Parol doğru deyil');
+      } else if (e.code == 'invalid-credential') {
         throw Exception('Parol doğru deyil');
       } else if (e.code == 'user-disabled') {
         throw Exception(
