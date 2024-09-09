@@ -45,19 +45,9 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
   }
 
   String formatDate(Timestamp? timestamp) {
-    var now = DateTime.now();
-    var date = timestamp?.toDate() ?? DateTime.now() ;
-    var difference = now.difference(date);
-
-    if (difference.inDays > 0) {
-      return DateFormat.yMMM().format(date);
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} saat önce';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} dakika önce';
-    } else {
-      return 'Şimdi';
-    }
+    var date = timestamp?.toDate() ?? DateTime.now();
+    return DateFormat('dd.MM.yyyy').format(date);
+    // return DateFormat.yMMM().format(date);
   }
 
   var _imagePicker = ImagePicker();
@@ -68,38 +58,13 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     var routeProvider = Provider.of<RouteProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: authProvider.currentUser?.isVerified ?? false
-              ? Icon(
-                  Icons.verified,
-                  color: Colors.green,
-                )
-              : (authProvider.currentUser?.isVerified == false &&
-                      authProvider.currentUser!.isDriverLicenseBackUploaded ==
-                          true)
-                  ? Icon(
-                      Icons.alarm,
-                      color: Colors.grey,
-                    )
-                  : Icon(
-                      Icons.verified,
-                      color: Colors.grey,
-                    ),
-          onPressed: () {},
+        leading: Icon(
+          Icons.verified,
+          color: Colors.green,
         ),
         backgroundColor: Color(0xff502eb2),
         actions: [
           GestureDetector(
-            onTap: () async {
-              await auth.FirebaseAuth.instance.signOut();
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginScreen(),
-                ),
-                ModalRoute.withName('/home'),
-              );
-            },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Icon(
@@ -107,6 +72,16 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                 color: Colors.white,
               ),
             ),
+            onTap: () async {
+              await auth.FirebaseAuth.instance.signOut();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginScreen(),
+                ),
+                    (Route<dynamic> route) => false,
+              );
+            },
           ),
         ],
       ),
@@ -259,15 +234,17 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                                                         Icon(Icons.clear)
                                                       ],
                                                     )),
-                                                onPressed: () async {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          FronDriverLicenseScreen(),
-                                                    ),
-                                                  );
-                                                }),
+                                                onPressed: () {},
+                                              ),
+                                    // async {
+                                    //   Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (_) =>
+                                    //           FronDriverLicenseScreen(),
+                                    //     ),
+                                    //   );
+                                    // }),
                                     SimpleDialogOption(
                                         padding: const EdgeInsets.all(5),
                                         child: Container(
@@ -451,7 +428,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18),
                                       ),
-                                      Text("Rides"),
+                                      Text("Gediş sayı"),
                                     ],
                                   ),
                                 ),
@@ -501,7 +478,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                                       ),
                                     ),
                                     Text(
-                                      "Member since",
+                                      "Qeydiyyat tarixi",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
@@ -519,7 +496,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                             top: 10,
                           ),
                           child: Text(
-                            "RIDER COMPLIMENTS",
+                            "Sərnişin rəyləri",
                             style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
@@ -539,7 +516,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                   );
                 } else {
                   return Center(
-                    child: Text("An error occured"),
+                    child: Text("Gözlənilməyən xəta baş verdi"),
                   );
                 }
               },

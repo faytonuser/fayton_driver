@@ -5,7 +5,6 @@ import 'package:driver/providers/navbar_provider.dart';
 import 'package:driver/screens/home_screen.dart';
 import 'package:driver/screens/message_list_screen.dart';
 import 'package:driver/screens/new_profile_screen.dart';
-import 'package:driver/screens/profile_screen.dart';
 import 'package:driver/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             icon: Image.asset(
               AssetPaths.logo,
             ),
-            title: ("Home"),
+            title: ("Ana səhifə"),
             activeForegroundColor: CupertinoColors.activeBlue,
             inactiveBackgroundColor: CupertinoColors.systemGrey,
           ),
@@ -61,7 +60,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           screen: MessageListScreen(),
           item: ItemConfig(
             icon: Icon(Icons.message),
-            title: ("Messages"),
+            title: ("Mesajlar"),
             activeForegroundColor: CupertinoColors.activeBlue,
             inactiveBackgroundColor: CupertinoColors.systemGrey,
           ),

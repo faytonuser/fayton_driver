@@ -11,7 +11,8 @@ class ProfileModel {
   final bool isVerified;
   final String userId;
   String? profileUrl;
-  int vehicleYear;
+  String vehicleYear;
+  String vehicleManufacturer;
   String vehicleModel;
   String? city;
   String vehicleColor;
@@ -38,6 +39,7 @@ class ProfileModel {
   }
 
   final String lastName;
+
   set settedProfileUrl(String? profileUrl) {
     profileUrl = profileUrl;
   }
@@ -71,6 +73,7 @@ class ProfileModel {
     this.rating,
     this.latitude,
     this.longitude,
+    required this.vehicleManufacturer,
     required this.vehicleModel,
     required this.vehicleColor,
     required this.vehicleYear,
@@ -114,6 +117,7 @@ class ProfileModel {
       vehicleColor: json["vehicleColor"],
       vehicleYear: json["vehicleYear"],
       city: json["city"],
+      vehicleManufacturer: json['vehicleManufacturer'],
     );
   }
 
@@ -147,6 +151,7 @@ class ProfileModel {
       "latitude": latitude,
       "longitude": longitude,
       'vehicleModel': vehicleModel,
+      'vehicleManufacturer': vehicleManufacturer,
       'vehicleYear': vehicleYear,
       'vehicleColor': vehicleColor,
       'city': city,

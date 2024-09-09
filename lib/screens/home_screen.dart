@@ -26,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   late SharedPreferences logindata;
   List<String> existingDocIds = [];
   int requestCount = 0;
@@ -36,18 +35,18 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
-  _backgroundServiceStartStop() async {
-    final service = FlutterBackgroundService();
-    var isRunning = await service.isRunning();
-    if (isRunning) {
-      service.invoke("stopService");
-    }
-    setState(() {});
-  }
+  // _backgroundServiceStartStop() async {
+  //   final service = FlutterBackgroundService();
+  //   var isRunning = await service.isRunning();
+  //   if (isRunning) {
+  //     service.invoke("stopService");
+  //   }
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
-    _backgroundServiceStartStop();
+    // _backgroundServiceStartStop();
     initial();
     checkLocationPermission();
     _checkNotificationPermission();
@@ -67,9 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Permission.notification.isDenied.then((value) {
       if (value) {
         Permission.notification.request().then((value) async {
-          await Permission.notification.isGranted.then((value) {
-
-          });
+          await Permission.notification.isGranted.then((value) {});
         });
       }
     });
@@ -93,7 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
       desiredAccuracy: LocationAccuracy.high,
     );
     setState(() {
-      var locationMessage = "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
+      var locationMessage =
+          "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
     });
   }
 
@@ -163,36 +161,40 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              if (!existingDocIds.contains(snapshot.data![index].docId)) {
-                                existingDocIds.add(snapshot.data![index].docId);
-                                logindata.setStringList('docId', existingDocIds);
-                                final service = FlutterBackgroundService();
-                                service.startService();
-                              }
-                              return snapshot.data![index].isComplete ?
-                            SizedBox.shrink() :
-                            Card(
-                              child: ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => RouteDetailScreen(
-                                          route: snapshot.data![index]),
-                                    ),
-                                  );
-                                },
-                                trailing: Icon(Icons.chevron_right, color: Colors.black54,),
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        "${snapshot.data![index].from}-${snapshot.data![index].to}"),
-                              /*      snapshot.data![index].maxPassengerCount <= 5 ? Row(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            if (!existingDocIds
+                                .contains(snapshot.data![index].docId)) {
+                              existingDocIds.add(snapshot.data![index].docId);
+                              logindata.setStringList('docId', existingDocIds);
+                              final service = FlutterBackgroundService();
+                              service.startService();
+                            }
+                            return snapshot.data![index].isComplete
+                                ? SizedBox.shrink()
+                                : Card(
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => RouteDetailScreen(
+                                                route: snapshot.data![index]),
+                                          ),
+                                        );
+                                      },
+                                      trailing: Icon(
+                                        Icons.chevron_right,
+                                        color: Colors.black54,
+                                      ),
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "${snapshot.data![index].from}-${snapshot.data![index].to}"),
+                                          /*      snapshot.data![index].maxPassengerCount <= 5 ? Row(
                                       children: List.generate(
                                         snapshot.data![index].maxPassengerCount,
                                             (seatIndex) =>  Container(
@@ -209,16 +211,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ).toList(),
                                     ) : Text('5+'),*/
-                                  ],
-                                ),
-                                subtitle: Text(Utils.getFormatedDate(
-                                    snapshot.data![index].startDate.toString()),
-                                style: TextStyle(
-                                  color: Colors.black54
-                                ),),
-                              ),
-                            );
-                            }),
+                                        ],
+                                      ),
+                                      subtitle: Text(
+                                        Utils.getFormatedDate(snapshot
+                                            .data![index].startDate
+                                            .toString()),
+                                        style: TextStyle(color: Colors.black54),
+                                      ),
+                                    ),
+                                  );
+                          },
+                        ),
                       ],
                     ),
                   );

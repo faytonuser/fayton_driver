@@ -1,36 +1,110 @@
-**Terms & Conditions**
+**"Fayton" Mobil Proqramı Ümumi Şərtlər və Qaydalar**
 
-By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you read them carefully before using the app. You’re not allowed to copy, or modify the app, any part of the app, or our trademarks in any way. You’re not allowed to attempt to extract the source code of the app, and you also shouldn’t try to translate the app into other languages, or make derivative versions. The app itself, and all the trade marks, copyright, database rights and other intellectual property rights related to it, still belong to Robert Brunhage.
+1. Ümumi Məlumat
 
-Robert Brunhage is committed to ensuring that the app is as useful and efficient as possible. For that reason, we reserve the right to make changes to the app or to charge for its services, at any time and for any reason. We will never charge you for the app or its services without making it very clear to you exactly what you’re paying for.
+"Fayton" mobil tətbiqi (bundan sonra "Tətbiq") istifadəçilərə Azərbaycan Respublikası daxilində yolçuluq xidmətləri üzrə bir-birini tapmaq və əlaqə qurmaq imkanı yaradır. Bu Tətbiqdən istifadə etməklə, siz bu Ümumi Şərtlər və Qaydaları (bundan sonra "Şərtlər") qəbul etmiş sayılırsınız. Şərtlərlə razı deyilsinizsə, Tətbiqdən istifadə etməməyiniz xahiş olunur.
 
-The Terms of service app app stores and processes personal data that you have provided to us, in order to provide my Service. It’s your responsibility to keep your phone and access to the app secure. We therefore recommend that you do not jailbreak or root your phone, which is the process of removing software restrictions and limitations imposed by the official operating system of your device. It could make your phone vulnerable to malware/viruses/malicious programs, compromise your phone’s security features and it could mean that the Terms of service app app won’t work properly or at all.
+2. Qeydiyyat və Hesab
 
-The app does use third party services that declare their own Terms and Conditions.
+- Tətbiqi istifadə etmək üçün istifadəçi kimi qeydiyyatdan keçməyiniz lazımdır.
+- Qeydiyyat zamanı düzgün, tam və aktual məlumat verməlisiniz.
+- Hesabınızı üçüncü şəxslərlə paylaşmaq və ya başqa şəxsin hesabını icazəsiz istifadə etmək qadağandır.
 
-Link to Terms and Conditions of third party service providers used by the app
+3. Xidmətin Təsviri
 
-*   [Google Play Services](https://policies.google.com/terms)
-*   [Google Analytics for Firebase](https://firebase.google.com/terms/analytics)
+- "Fayton" Tətbiqi istifadəçilərə səyahətləri üzrə sürücülər ilə sərnişinləri əlaqələndirir.
+- Tətbiq vasitəsi ilə sürücülər öz marşrutlarını və boş yerləri qeyd edə bilərlər.
+- "Fayton" Tətbiqi yalnız vasitəçi rolunu oynayır və xidmətin keyfiyyəti və təhlükəsizliyi üçün məsuliyyət daşımır.
 
-You should be aware that there are certain things that Robert Brunhage will not take responsibility for. Certain functions of the app will require the app to have an active internet connection. The connection can be Wi-Fi, or provided by your mobile network provider, but Robert Brunhage cannot take responsibility for the app not working at full functionality if you don’t have access to Wi-Fi, and you don’t have any of your data allowance left.
+4. İstifadəçi Öhdəlikləri
 
-If you’re using the app outside of an area with Wi-Fi, you should remember that your terms of the agreement with your mobile network provider will still apply. As a result, you may be charged by your mobile provider for the cost of data for the duration of the connection while accessing the app, or other third party charges. In using the app, you’re accepting responsibility for any such charges, including roaming data charges if you use the app outside of your home territory (i.e. region or country) without turning off data roaming. If you are not the bill payer for the device on which you’re using the app, please be aware that we assume that you have received permission from the bill payer for using the app.
+- İstifadəçilər Tətbiqdən yalnız qanun çərçivəsində və əxlaqi qaydalara uyğun istifadə etməlidirlər.
+- Maşın sahibləri təhlükəsiz və işlək vəziyyətdə olan nəqliyyat vasitəsi təqdim etməlidirlər.
+- Sərnişinlər yolçuluq zamanı maşın sahibinə qarşı hörmətli və nəzakətli davranmalıdırlar.
 
-Along the same lines, Robert Brunhage cannot always take responsibility for the way you use the app i.e. You need to make sure that your device stays charged – if it runs out of battery and you can’t turn it on to avail the Service, Robert Brunhage cannot accept responsibility.
+5. Ödəniş və Komissiyalar
 
-With respect to Robert Brunhage’s responsibility for your use of the app, when you’re using the app, it’s important to bear in mind that although we endeavour to ensure that it is updated and correct at all times, we do rely on third parties to provide information to us so that we can make it available to you. Robert Brunhage accepts no liability for any loss, direct or indirect, you experience as a result of relying wholly on this functionality of the app.
+- Tətbiq vasitəsilə edilən yolçuluqlar üçün ödənişlərin məbləği tərəflər arasında razılaşdırılır.
+- "Fayton" Tətbiqi, göstərilən xidmətlərə görə müəyyən komissiya haqqı ala bilər. Komissiya haqqı istifadəçilərə əvvəlcədən bildiriləcək.
 
-At some point, we may wish to update the app. The app is currently available on Android & iOS – the requirements for both systems(and for any additional systems we decide to extend the availability of the app to) may change, and you’ll need to download the updates if you want to keep using the app. Robert Brunhage does not promise that it will always update the app so that it is relevant to you and/or works with the Android & iOS version that you have installed on your device. However, you promise to always accept updates to the application when offered to you, We may also wish to stop providing the app, and may terminate use of it at any time without giving notice of termination to you. Unless we tell you otherwise, upon any termination, (a) the rights and licenses granted to you in these terms will end; (b) you must stop using the app, and (if needed) delete it from your device.
+6. Məsuliyyətin Məhdudlaşdırılması
 
-**Changes to This Terms and Conditions**
+- "Fayton" Tətbiqi vasitəsi ilə edilən heç bir yolçuluq üçün məsuliyyət daşımır.
+- İstifadəçilər arasında yaranan hər hansı mübahisələrdə "Fayton" Tətbiqi məsuliyyət daşımır və müdaxilə etmir.
+- "Fayton" Tətbiqi hər hansı texniki nasazlıq və ya məlumatların itirilməsi nəticəsində yaranan itkilər üçün məsuliyyət daşımır.
 
-I may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Terms and Conditions on this page.
+7. Şəxsi Məlumatların Mühafizəsi
 
-These terms and conditions are effective as of 2020-06-08
+- "Fayton" Tətbiqi istifadəçilərin şəxsi məlumatlarını qorumağa sadiqdir.
+- Tətbiqdə toplanan şəxsi məlumatlar yalnız xidmətin təmin edilməsi və təkmilləşdirilməsi üçün istifadə olunur.
+- İstifadəçilərin məlumatları üçüncü şəxslərə yalnız qanunla müəyyən edilmiş hallarda və ya istifadəçilərin razılığı ilə açıqlana bilər.
 
-**Contact Us**
+8. Şərtlərin Dəyişdirilməsi
 
-If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at asdflkjasdf@gmail.com.
+- "Fayton" Tətbiqi bu Şərtləri istənilən vaxt dəyişdirmək hüququna malikdir.
+- Şərtlərdə edilən hər hansı dəyişikliklər Tətbiqdə yayımlandığı andan etibarən qüvvəyə minir. Bu dəyişikliklərlə tanış olmaq Tətbiq istifadəçilərinin məsuliyyətindədir.
 
-This Terms and Conditions page was generated by [App Privacy Policy Generator](https://app-privacy-policy-generator.firebaseapp.com/)
+9. Mübahisələrin Həlli
+
+- Bu Şərtlərdən irəli gələn və ya onunla bağlı olan hər hansı mübahisə Azərbaycan Respublikasının qanunvericiliyinə uyğun olaraq həll edilir.
+- İstifadəçilər arasında yaranan mübahisələr ilkin olaraq danışıqlar yolu ilə həll edilməyə çalışılacaq.
+
+10. Əlaqə Məlumatları
+
+- Hər hansı sual, təklif və ya şikayət üçün bizə aşağıdakı əlaqə vasitələri ilə müraciət edə bilərsiniz:
+    - E-poçt: faytondriver@gmail.com
+
+Məxfilik Siyasəti və Kukilər səhifəsində bu açılsın:
+
+Səhifənin başlığı: Məxfilik Siyasəti və Kukilər
+
+Məxfilik Siyasəti və Kukilər haqqında Məlumat
+
+1. Ümumi Məlumat
+
+Bu Məxfilik Siyasəti "Fayton" mobil tətbiqi (bundan sonra "Tətbiq") tərəfindən toplanan şəxsi məlumatların necə toplandığını, istifadə edildiyini, saxlandığını və qorunduğunu izah edir. Tətbiqdən istifadə etməklə, siz bu Məxfilik Siyasətinə uyğun olaraq şəxsi məlumatlarınızın emal edilməsinə razılıq verirsiniz.
+
+2. Toplanılan Məlumatlar
+
+- **Şəxsi Məlumatlar**: Qeydiyyat zamanı sizdən ad, soyad, telefon nömrəsi, e-poçt ünvanı və digər əlaqə məlumatları tələb oluna bilər.
+- **Avtomatik Toplanan Məlumatlar**: Tətbiqdən istifadə zamanı avtomatik olaraq cihaz məlumatları, IP ünvanı, coğrafi yer məlumatları və istifadəçi fəaliyyəti haqqında məlumatlar toplanır.
+- **Kukilər (Cookies)**: Tətbiq istifadəçi təcrübəsini yaxşılaşdırmaq üçün kukilərdən istifadə edir. Kukilər, sizin cihazınızda saxlanan kiçik məlumat fayllarıdır.
+
+3. Məlumatların İstifadəsi
+
+Toplanmış məlumatlar aşağıdakı məqsədlər üçün istifadə oluna bilər:
+
+- **Xidmətin Təmin Edilməsi**: Tətbiq vasitəsilə yolçuluq xidmətlərinin göstərilməsi və istifadəçilər arasında əlaqənin təmin edilməsi.
+- **Xidmətin Təkmilləşdirilməsi**: İstifadəçi təcrübəsinin təkmilləşdirilməsi və xidmət keyfiyyətinin artırılması məqsədilə məlumatların analizi.
+- **Marketinq və Bildirişlər**: İstifadəçilərə xidmətlərimiz haqqında yeniliklər, təkliflər və digər məlumatların göndərilməsi (istifadəçilər bu bildirişlərdən istənilən vaxt imtina edə bilərlər).
+
+4. Məlumatların Paylaşılması
+
+- **Üçüncü Şəxslərlə Paylaşım**: Şəxsi məlumatlar yalnız qanuni əsaslarla və ya istifadəçinin razılığı ilə üçüncü şəxslərə açıqlana bilər.
+- **Təhlükəsizlik və Hüquqi Tələblər**: Hüquqi məcburiyyətlər yarandığı təqdirdə və ya təhlükəsizliyin təmin edilməsi məqsədilə məlumatlar dövlət orqanlarına açıqlana bilər.
+
+5. Kukilər (Cookies) və Onların İstifadəsi
+
+- **Kukilərin Növü**: Tətbiqdə həm sessiya kukiləri (cihazı söndürdükdən sonra avtomatik silinir), həm də davamlı kukilər (müəyyən bir müddət cihazınızda qalır) istifadə olunur.
+- **Kukilərin İdarə Edilməsi**: İstifadəçilər brauzer parametrlərini dəyişərək kukilərin saxlanılmasına icazə verməyə və ya onları bloklamağa qərar verə bilərlər. Lakin bu, Tətbiqin bəzi funksiyalarının düzgün işləməməsinə səbəb ola bilər.
+- **Üçüncü Şəxslərin Kukiləri**: Tətbiqdə üçüncü tərəflərin kukilərindən istifadə oluna bilər (məsələn, analitik xidmətlər üçün). Bu kukilər haqqında daha ətraflı məlumat üçün müvafiq üçüncü tərəfin Məxfilik Siyasətinə baxın.
+
+6. Məlumatların Mühafizəsi
+
+- **Təhlükəsizlik Tədbirləri**: İstifadəçi məlumatlarının təhlükəsizliyini təmin etmək üçün müvafiq texniki və təşkilati tədbirlər görülür.
+- **Məlumatların Saxlanma Müddəti**: Şəxsi məlumatlar yalnız zəruri müddət ərzində saxlanılır və xidmətin təmin edilməsi üçün lazım olmayan məlumatlar silinir.
+
+7. İstifadəçi Hüquqları
+
+- **Məlumatlara Giriş**: İstifadəçilər şəxsi məlumatlarına giriş tələb edə bilər və bu məlumatların düzəldilməsi və ya silinməsi üçün müraciət edə bilərlər.
+- **İmtina Hüququ**: İstifadəçilər marketinq bildirişlərindən və ya müəyyən məlumatların toplanmasından imtina etmək hüququna malikdirlər.
+
+8. Dəyişikliklər və Yeniləmələr
+
+Bu Məxfilik Siyasəti vaxtaşırı yenilənə bilər. Hər hansı bir dəyişiklik edildikdə, yenilənmiş versiya Tətbiqdə yayımlanacaq və qüvvəyə minəcək.
+
+9. Əlaqə Məlumatları
+
+Məxfilik Siyasəti ilə bağlı hər hansı sual və ya narahatlığınız varsa, bizimlə aşağıdakı əlaqə vasitələri ilə əlaqə saxlaya bilərsiniz:
+
+- E-poçt: faytondriver@gmail.com

@@ -33,27 +33,25 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
     super.initState();
   }
 
-  void updateDriverIsVerified() async {
-    var authProvider = Provider.of<AuthProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      authProvider.currentUser = widget.currentUser;
-    });
-    try {
-      // Firestore instance'ı oluşturun
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-      // drivers koleksiyonundaki belirli belgeyi alın
-      DocumentReference driverRef =
-          firestore.collection('drivers').doc(authProvider.currentUser!.userId);
-
-      // Belgeyi güncelleyin
-      await driverRef.update({'isVerified': true});
-
-      print('Driver isVerified updated successfully!');
-    } catch (e) {
-      print('Error updating driver isVerified: $e');
-    }
-  }
+  // void updateDriverIsVerified() async {
+  //   var authProvider = Provider.of<AuthProvider>(context, listen: false);
+  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  //     authProvider.currentUser = widget.currentUser;
+  //   });
+  //   try {
+  //
+  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //
+  //     DocumentReference driverRef =
+  //         firestore.collection('drivers').doc(authProvider.currentUser!.userId);
+  //
+  //     await driverRef.update({'isVerified': true});
+  //
+  //     print('Driver isVerified updated successfully!');
+  //   } catch (e) {
+  //     print('Error updating driver isVerified: $e');
+  //   }
+  // }
 
   void showNoMailAppsDialog(BuildContext context) {
     showDialog(
@@ -79,24 +77,24 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
   Widget build(BuildContext context) {
     var authProvider = Provider.of<AuthProvider>(context);
 
-    Timer(Duration(seconds: 3), () {
-      try {
-        // Firestore instance'ı oluşturun
-        FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-        // drivers koleksiyonundaki belirli belgeyi alın
-        DocumentReference driverRef = firestore
-            .collection('drivers')
-            .doc(authProvider.currentUser!.userId);
-
-        // Belgeyi güncelleyin
-        driverRef.update({'isVerified': true});
-
-        print('Driver isVerified updated successfully!');
-      } catch (e) {
-        print('Error updating driver isVerified: $e');
-      }
-    });
+    // Timer(Duration(seconds: 3), () {
+    //   try {
+    //     // Firestore instance'ı oluşturun
+    //     FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //
+    //     // drivers koleksiyonundaki belirli belgeyi alın
+    //     DocumentReference driverRef = firestore
+    //         .collection('drivers')
+    //         .doc(authProvider.currentUser!.userId);
+    //
+    //     // Belgeyi güncelleyin
+    //     // driverRef.update({'isVerified': true});
+    //
+    //     // print('Driver isVerified updated successfully!');
+    //   } catch (e) {
+    //     print('Error updating driver isVerified: $e');
+    //   }
+    // });
 
     return Scaffold(
       body: authProvider.currentUser == null
@@ -118,7 +116,7 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 48.0, right: 48),
                     child: Text(
-                      'Hörmətli ${authProvider.currentUser!.name} gözləmə siyahısındasınız, yoxlama tamamlandıqdan sonra sizi xəbərdar edəcəyik.',
+                      'Hesab yaradılması haqqında məlumatlarınızı analiz edirik. Maksimum növbəti 1 gün ərzində hesabınız təsdiqlənəcək.',
                       style: AppFonts.generalTextTheme(Colors.black),
                     ),
                   ),
@@ -127,13 +125,12 @@ class _VerificationWaitingScreenState extends State<VerificationWaitingScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: GestureDetector(
-                          onTap: () async {
-                            _sendEmail();
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 48.0, right: 48),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: GestureDetector(
+                            onTap: () async {
+                              _sendEmail();
+                            },
                             child: CustomButton(
                               text: 'Bizə e-poçt göndərin',
                               backgroundColor: AppColors.primaryColor,

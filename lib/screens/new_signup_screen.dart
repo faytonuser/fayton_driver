@@ -36,7 +36,24 @@ class NewSignupScreen extends StatelessWidget {
     var authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            if (_pageController.page! > 0) {
+              _pageController.previousPage(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            } else {
+              Navigator.pop(context);
+            }
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            size: 20,
+          ),
+        ),
+      ),
       body: SizedBox(
         // width: 100,
         child: Column(
@@ -90,9 +107,6 @@ class NewSignupScreen extends StatelessWidget {
                     ),
                     height: 250,
                   ),
-                  // EndDriverLicenseScreen(),
-                  // FronDriverLicenseScreen(),
-                  // FacePhotoScreen(),
                 ],
               ),
             ),
@@ -124,20 +138,67 @@ class NewSignupScreen extends StatelessWidget {
                 ),
               ),
               onTap: (startLoading, stopLoading, btnState) async {
+                await authProvider.checkIfEmailExists();
+                await authProvider.isPhoneNumberExists();
                 try {
                   startLoading();
                   if (authProvider.currentPageIndex == 0) {
-                    if (authProvider.emailPasswordFormKey.currentState
-                            ?.validate() ??
-                        false) {
+                    if (isEmailFieldValid &&
+                        isPhoneNumberValid &&
+                        isCityValid &&
+                        isPasswordValid &&
+                        isPasswordConfirmationValid &&
+                        !isEmailAlreadyUsed &&
+                        !isPhoneNumberAlreadyExists) {
                       _pageController.nextPage(
-                          duration: Duration(seconds: 1), curve: Curves.easeIn);
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
                       authProvider.activeStep = _pageController.page?.toInt();
-                    } else {
+                      // print("HAL HAZIRKİ SƏHİFƏƏƏ ${authProvider.currentPageIndex}");
+                    } else if (!isEmailFieldValid) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                              'Zəhmət olmasa, bütün sahələri düzgün doldurun'),
+                          content: Text('Zəhmət olmasa, email daxil edin'),
+                        ),
+                      );
+                    } else if (!isPhoneNumberValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Zəhmət olmasa, nömrəni daxil edin.'),
+                        ),
+                      );
+                    } else if (!isCityValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('Zəhmət olmasa, yaşadığınız şəhəri seçin.'),
+                        ),
+                      );
+                    } else if (!isPasswordValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Zəhmət olmasa, parol daxil edin.'),
+                        ),
+                      );
+                    } else if (!isPasswordConfirmationValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('Zəhmət olmasa, parolu yenidən daxil edin.'),
+                        ),
+                      );
+                    } else if (isEmailAlreadyUsed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('Bu email ilə artıq qeydiyyat mövcuddur.'),
+                        ),
+                      );
+                    } else if (isPhoneNumberAlreadyExists) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('Bu nömrə ilə artıq qeydiyyat mövcuddur.'),
                         ),
                       );
                     }
@@ -172,8 +233,11 @@ class NewSignupScreen extends StatelessWidget {
                       authProvider.activeStep = _pageController.page?.toInt();
                     }
                   } else if (authProvider.vehicleDetailStep == true) {
-                    if (authProvider.identityInfoFormKey.currentState!
-                        .validate() && isCarFormValid) {
+                    if (authProvider.identityInfoFormKey.currentState != null &&
+                        authProvider.identityInfoFormKey.currentState!
+                            .validate() &&
+                        isCarFormValid &&
+                        isGenderSelected) {
                       var response = await authProvider.addUserToDb();
                       if (response != null) {
                         Navigator.pushAndRemoveUntil(
@@ -185,11 +249,18 @@ class NewSignupScreen extends StatelessWidget {
                           (route) => false,
                         );
                       }
-                    } else {
+                    } else if (!isGenderSelected) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                            content: Text(
-                                "Zəhmət olmasa, bütün sahələri düzgün doldurun")),
+                          content: Text("Zəhmət olmasa, cinsinizi seçin"),
+                        ),
+                      );
+                    }else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              "Zəhmət olmasa, bütün sahələri düzgün doldurun"),
+                        ),
                       );
                     }
                   } else if (authProvider.lastStep == true) {
@@ -245,20 +316,14 @@ class NewSignupScreen extends StatelessWidget {
     switch (index) {
       case 1:
         return 'Educational Background';
-
       case 2:
         return 'Professional Background';
-
       case 3:
         return 'Hobbies';
-
       case 4:
         return 'Medical History';
-
       case 5:
         return 'Payment';
-
-      // Here, default corresponds to the index value = 0.
       default:
         return 'Welcome';
     }

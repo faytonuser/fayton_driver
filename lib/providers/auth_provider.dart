@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as model;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driver/common/globals.dart';
 import 'package:driver/models/profile_model.dart';
 import 'package:driver/models/state_model.dart';
 import 'package:driver/models/verificaiton_model.dart';
@@ -27,6 +28,7 @@ class AuthProvider extends ChangeNotifier {
   String _passwordAgain = '';
 
   String get password => _password;
+
   String get passwordAgain => _passwordAgain;
 
   String? get passwordError => _passwordError;
@@ -52,34 +54,47 @@ class AuthProvider extends ChangeNotifier {
 
   TextEditingController get phoneController => _phoneController;
   final TextEditingController _identityNumberController =
-  TextEditingController();
+      TextEditingController();
 
   TextEditingController get identityNumberController =>
       _identityNumberController;
   TextEditingController _plateController = TextEditingController();
+  String _plateNumber = '';
+  String? _plateError = '';
 
   TextEditingController get plateController => _plateController;
-  TextEditingController _manufaturerController = TextEditingController();
-
-  TextEditingController get manufaturerController => _manufaturerController;
   final TextEditingController _nameController = TextEditingController();
 
   TextEditingController get nameController => _nameController;
   final TextEditingController _familyNameController = TextEditingController();
-  final TextEditingController _vehicleYearController = TextEditingController();
 
-  TextEditingController get vehicleYearController => _vehicleYearController;
-  final TextEditingController _vehicleModelController = TextEditingController();
+  String? _selectedManufacturer;
+  String? _selectedModel;
+  String? _selectedYear;
+  String? _selectedColor;
 
-  TextEditingController get vehicleModelController => _vehicleModelController;
-  final TextEditingController _vehicleColorController = TextEditingController();
+  String? get selectedManufacturer => _selectedManufacturer;
 
-  TextEditingController get vehicleColorController => _vehicleColorController;
+  String? get selectedModel => _selectedModel;
+
+  String? get selectedYear => _selectedYear;
+
+  String? get selectedColor => _selectedColor;
+
   TextEditingController _supportMailController = TextEditingController();
 
   TextEditingController get supportMailController => _supportMailController;
 
   TextEditingController get familyNameController => _familyNameController;
+  String? _name;
+  String? _surname;
+  String? _nameError;
+  String? _surnameError;
+
+  String? get name => _name;
+  String? get surname => _surname;
+  String? get nameError => _nameError;
+  String? get surnameError => _surnameError;
 
   TextEditingController _signupPasswordController = TextEditingController();
 
@@ -87,7 +102,7 @@ class AuthProvider extends ChangeNotifier {
       _signupPasswordController;
 
   TextEditingController _signupPasswordAgainController =
-  TextEditingController();
+      TextEditingController();
 
   TextEditingController get signupPasswordAgainController =>
       _signupPasswordAgainController;
@@ -100,12 +115,43 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  updateName(String value){
+    print(value);
+    _name = value;
+    if (_name == null){
+      _nameError = 'Adınızı daxil edin';
+    }
+    else if (_name!.length < 3){
+      _nameError = 'Zəhmət olmasa, adınızı tam daxil edin';
+    }
+    else {
+     _nameError = null;
+    }
+    notifyListeners();
+  }
+  updateSurname(String value){
+    _surname = value;
+    if (_surname == null){
+      _surnameError = 'Soyadınızı daxil edin';
+    }
+    else if (_surname!.length < 3){
+      _surnameError = 'Zəhmət olmasa, soyadınızı tam daxil edin';
+    }
+    else{
+    _surnameError = null;
+    }
+    notifyListeners();
+  }
   updatePassword(String value) {
     _password = value;
-    if (!_password.isNotEmpty) {
+    if (!value.isNotEmpty) {
       _passwordError = "Şifrə daxil edilməlidir";
+    } else if (value.length < 6) {
+      _passwordError = "Şifrə minimum 6 simvoldan ibarət olmalıdır.";
     } else {
       _passwordError = null;
+      isPasswordValid = true;
     }
     notifyListeners();
   }
@@ -118,11 +164,27 @@ class AuthProvider extends ChangeNotifier {
       _passwordAgainError = "Şifrə təkrarı düzgün daxil edilməlidir.";
     } else {
       _passwordAgainError = null;
+      isPasswordConfirmationValid = true;
     }
-    notifyListeners
-    (
-    );
+    notifyListeners();
   }
+
+  updatePlate(value) {
+    String pattern = r'^\d{2}[A-Z]{2}\d{3}$';
+    RegExp regExp = RegExp(pattern);
+    _plateNumber = value;
+    if (plateNumber.isEmpty) {
+      _plateError = 'Mətn daxil edin';
+    } else if (!regExp.hasMatch(value)) {
+      _plateError = 'Düzgün format daxil edin: 11AA111';
+    }
+    _plateError = null;
+    notifyListeners();
+  }
+
+  String? get plateError => _plateError;
+
+  String get plateNumber => _plateNumber;
 
   Client _client = Client();
 
@@ -132,7 +194,7 @@ class AuthProvider extends ChangeNotifier {
 
   String? get phoneNumber => _phoneNumber;
 
-  set phoneNumber(value) {
+  updatePhoneNumber(value) {
     _phoneNumber = value;
     if (value == null) {
       _phoneError = "Bu sahə boş olmamalıdır";
@@ -147,12 +209,15 @@ class AuthProvider extends ChangeNotifier {
   updateEmail(String value) {
     _emailController.text = value;
     if (value.isEmpty) {
-      _emailError = "Bu sahə boş olmamalıdır";
+      _emailError = "Zəhmət olmasa, email daxil edin.";
+      isEmailFieldValid = false;
     } else if (!RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(value)) {
+      isEmailFieldValid = false;
       _emailError = "E-poçt düzgün formatda deyil";
     } else {
+      isEmailFieldValid = true;
       _emailError = null;
     }
     notifyListeners();
@@ -337,7 +402,7 @@ class AuthProvider extends ChangeNotifier {
   final _identityInfoFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> _emailPasswordFormKey = GlobalKey<FormState>();
 
-  GlobalKey<FormState> get identityInfoFormKey => _identityInfoFormKey;
+  final GlobalKey<FormState> identityInfoFormKey = GlobalKey<FormState>();
 
   GlobalKey<FormState> get emailPasswordFormKey => _emailPasswordFormKey;
 
@@ -374,7 +439,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-
   Future<bool> doesNameAlreadyExist(String name) async {
     final QuerySnapshot result = await FirebaseFirestore.instance
         .collection('company')
@@ -383,6 +447,49 @@ class AuthProvider extends ChangeNotifier {
         .get();
     final List<DocumentSnapshot> documents = result.docs;
     return documents.length == 1;
+  }
+
+  Future<bool> checkIfEmailExists() async {
+    try {
+      List<String> signInMethods = await FirebaseAuth.instance
+          .fetchSignInMethodsForEmail(_emailController.text);
+      if (signInMethods.isNotEmpty) {
+        //Email ALREADY EXISTS
+        isEmailAlreadyUsed = true;
+        return true;
+      } else {
+        //EMAIL NOT EXISTS
+        isEmailAlreadyUsed = false;
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> isPhoneNumberExists() async {
+    String formattedPhoneNumber =
+        phoneController.text.replaceAll(' ', '').replaceFirst('+994', '994');
+    try {
+      var querySnapshot = await firestore
+          .collection('drivers')
+          .where('mobilePhone', isEqualTo: "+994" + formattedPhoneNumber)
+          .get();
+      print("Telefon nömrəsi: $formattedPhoneNumber");
+      if (querySnapshot.docs.isNotEmpty) {
+        print("Telefon Nömrəsi Mövcuddur");
+        isPhoneNumberAlreadyExists = true;
+        return true;
+      } else {
+        print("Telefon Nömrəsi Mövcud deyil");
+        isPhoneNumberAlreadyExists = false;
+        return false;
+      }
+    } catch (e) {
+      print('Xəta baş verdi: $e');
+      return false;
+    }
   }
 
   Future<bool> signInWithEmail() async {
@@ -397,7 +504,6 @@ class AuthProvider extends ChangeNotifier {
       isLoading = false;
       return true;
     } on FirebaseAuthException catch (e) {
-
       print("ERRORR CODEEEE __________________ +++   ${e.code}");
       isLoading = false;
       if (e.code == 'user-not-found') {
@@ -450,14 +556,23 @@ class AuthProvider extends ChangeNotifier {
     try {
       isLoading = true;
 
-      var downloadUrl = await storage
+      // Şəkli Firebase Storage-ə yükləyin
+      var storageRef = storage
           .ref('profile_pictures')
-          .child(currentUser!.userId)
-          .getDownloadURL();
+          .child(currentUser!.userId);
+
+      // Faylı yükləyin
+      var uploadTask = await storageRef.putFile(profile);
+
+      // Fayl yükləndikdən sonra yükləmə linkini əldə edin
+      var downloadUrl = await storageRef.getDownloadURL();
+
+      // Firestore-da yüklənmə linkini saxlayın
       await firestore
           .collection('drivers')
           .doc(currentUser!.userId)
           .set({"profileUrl": downloadUrl}, SetOptions(merge: true));
+
       isLoading = false;
       return downloadUrl;
     } catch (e) {
@@ -465,6 +580,7 @@ class AuthProvider extends ChangeNotifier {
       throw Exception(e);
     }
   }
+
 
   Future signout() async {
     await AuthService.signOut();
@@ -497,6 +613,34 @@ class AuthProvider extends ChangeNotifier {
   String backPhoto = "";
   String frontPhoto = "";
 
+  updateSelectedManufacturer(String? value) {
+    if (value != null) {
+      _selectedManufacturer = value;
+    }
+    notifyListeners();
+  }
+
+  updateSelectedModel(String? value) {
+    if (value != null) {
+      _selectedModel = value;
+    }
+    notifyListeners();
+  }
+
+  updateSelectedYear(String? value) {
+    if (value != null) {
+      _selectedYear = value;
+    }
+    notifyListeners();
+  }
+
+  updateSelectedColor(String? value) {
+    if (value != null) {
+      _selectedColor = value;
+    }
+    notifyListeners();
+  }
+
   Future<ProfileModel?> addUserToDb() async {
     isLoading = true;
     notifyListeners();
@@ -509,21 +653,23 @@ class AuthProvider extends ChangeNotifier {
         email: emailController.text,
         password: signupPasswordController.text,
       );
-
       if (userCredential.user != null) {
-        await uploadFiles(userCredential.user!.uid);
+        String userId = userCredential.user!.uid;
 
         var profileModel = ProfileModel(
           isDriverLicenseBackUploaded: true,
           isDriverLicenseFrontUploaded: true,
           identityNumber: identityNumberController.text,
           email: emailController.text,
-          mobilePhone: "+994" + phoneController.text.trim(),
+          mobilePhone: "+994" +
+              phoneController.text
+                  .replaceAll(" ", "")
+                  .replaceFirst("+994", "994"),
           city: city?.title ?? "TR",
           name: nameController.text,
           surname: familyNameController.text,
           isVerified: false,
-          userId: auth.currentUser!.uid,
+          userId: userId,
           plateNumber: plateController.text,
           deviceToken: deviceToken ?? "",
           driverLicenseBackPhoto: backPhoto,
@@ -531,15 +677,16 @@ class AuthProvider extends ChangeNotifier {
           facePhotoUrl: facePhotoUrl,
           profileUrl: facePhotoUrl,
           lastName: familyNameController.text,
-          vehicleModel: vehicleModelController.text,
-          vehicleColor: vehicleColorController.text,
-          vehicleYear: int.parse(vehicleYearController.text),
+          vehicleManufacturer: selectedManufacturer ?? '',
+          vehicleModel: selectedModel ?? '',
+          vehicleColor: selectedColor ?? '',
+          vehicleYear: selectedYear ?? '',
           createdAt: Timestamp.now(),
         );
 
         await client
             .collection('drivers')
-            .doc(userCredential.user!.uid)
+            .doc(userId)
             .set(profileModel.toJson());
 
         currentUser = profileModel;
@@ -550,10 +697,13 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       isLoading = false;
       notifyListeners();
+
       if (e.code == 'email-already-in-use') {
-        print('The email address is already in use by another account.');
         _exception = "Bu E-mail adresi artıq qeydiyyatdan keçib.";
         throw Exception('Bu E-mail adresi artıq qeydiyyatdan keçib.');
+      } else if (e.code == 'invalid-email') {
+        _exception = "Email düzgün deyil";
+        throw Exception("E-mail adresi düzgün daxil edilməyib");
       } else {
         print('An unknown error occurred: $e');
         _exception = "Bilinmənən bir xəta yarandı";
@@ -566,30 +716,30 @@ class AuthProvider extends ChangeNotifier {
     throw Exception("User could not be created");
   }
 
-  Future<ProfileModel?> updateUserToDb() async {
-    FirebaseFirestore client = FirebaseFirestore.instance;
-    try {
-      isLoading = true;
-      await uploadFiles(currentUser!.userId);
-      var verificationModel = VerificationModel(
-        isDriverLicenseFrontUploaded: true,
-        isDriverLicenseBackUploaded: true,
-        isFacePhotoUploaded: true,
-        facePhotoUrl: facePhotoUrl,
-        driverLicenseBackPhoto: backPhoto,
-        driverLicenseFrontPhoto: frontPhoto,
-      );
-
-      await client.collection('drivers').doc(auth.currentUser!.uid).set(
-        verificationModel.toJson(),
-        SetOptions(merge: true),
-      );
-      currentUser = await AuthService.getCurrentUser(auth.currentUser!.uid);
-      isLoading = false;
-      return currentUser;
-    } catch (e) {
-      isLoading = false;
-      throw Exception(e);
-    }
-  }
+  // Future<ProfileModel?> updateUserToDb() async {
+  //   FirebaseFirestore client = FirebaseFirestore.instance;
+  //   try {
+  //     isLoading = true;
+  //     await uploadFiles(currentUser!.userId);
+  //     var verificationModel = VerificationModel(
+  //       isDriverLicenseFrontUploaded: true,
+  //       isDriverLicenseBackUploaded: true,
+  //       isFacePhotoUploaded: true,
+  //       facePhotoUrl: facePhotoUrl,
+  //       driverLicenseBackPhoto: backPhoto,
+  //       driverLicenseFrontPhoto: frontPhoto,
+  //     );
+  //
+  //     await client.collection('drivers').doc(auth.currentUser!.uid).set(
+  //           verificationModel.toJson(),
+  //           SetOptions(merge: true),
+  //         );
+  //     currentUser = await AuthService.getCurrentUser(auth.currentUser!.uid);
+  //     isLoading = false;
+  //     return currentUser;
+  //   } catch (e) {
+  //     isLoading = false;
+  //     throw Exception(e);
+  //   }
+  // }
 }

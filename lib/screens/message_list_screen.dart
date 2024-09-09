@@ -1,5 +1,7 @@
 import 'package:driver/common/assets.dart';
+import 'package:driver/screens/login_screen.dart';
 import 'package:driver/screens/message_detail_screen.dart';
+import 'package:driver/screens/profile_screen.dart';
 import 'package:driver/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +93,10 @@ class _MessageListScreenState extends State<MessageListScreen> {
       appBar: AppBar(
         actions: [],
         systemOverlayStyle: SystemUiOverlayStyle.light,
-        title: const Text('Mesajlar', style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Mesajlar',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(0xff502eb2),
       ),
       body: _user == null
@@ -106,13 +111,12 @@ class _MessageListScreenState extends State<MessageListScreen> {
                   const Text('Not authenticated'),
                   TextButton(
                     onPressed: () {
-                      // FirebaseChatCore.instance.createUserInFirestore(user)
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     fullscreenDialog: true,
-                      //     builder: (context) => const LoginPage(),
-                      //   ),
-                      // );
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => ProfileScreen(),
+                        ),
+                      );
                     },
                     child: const Text('Login'),
                   ),
@@ -151,9 +155,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => ChatPage(
-                                room: room
-                              ),
+                              builder: (context) => ChatPage(room: room),
                             ),
                           );
                         },

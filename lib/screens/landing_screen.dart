@@ -3,7 +3,6 @@ import 'package:driver/models/profile_model.dart';
 import 'package:driver/providers/auth_provider.dart';
 import 'package:driver/screens/custom_navigation_bar.dart';
 import 'package:driver/screens/login_screen.dart';
-import 'package:driver/screens/verification_waiting_screen.dart';
 import 'package:driver/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';

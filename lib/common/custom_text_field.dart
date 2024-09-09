@@ -1,5 +1,6 @@
 import 'package:driver/common/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxCharacter;
   final int? minCharacter;
   final VoidCallback? onTap;
+  final List<TextInputFormatter>? inputFormatters;
   final Function(String)? onTextChanged;
   final TextStyle? style;
   final bool? obsucure;
@@ -46,6 +48,7 @@ class CustomTextField extends StatelessWidget {
     this.obsucure,
     this.errorText,
     this.onTextChanged,
+    this.inputFormatters,
   }) : super(key: key);
 //
   @override
@@ -63,7 +66,9 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxCharacter,
       minLines: 1,
       style: style,
+      inputFormatters: inputFormatters ?? null,
       decoration: InputDecoration(
+        counterText: "",
         errorText: errorText,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primaryColor, width: 0.5),

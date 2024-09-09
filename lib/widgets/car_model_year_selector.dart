@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/common/globals.dart';
+import 'package:driver/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DependentDropdowns extends StatefulWidget {
   @override
@@ -8,10 +10,7 @@ class DependentDropdowns extends StatefulWidget {
 }
 
 class _DependentDropdownsState extends State<DependentDropdowns> {
-  String? selectedManufacturer;
-  String? selectedModel;
-  String? selectedYear;
-  String? selectedColor;
+
 
   List<Map<String, String>> manufacturers = [];
   List<String> models = [];
@@ -187,15 +186,16 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
   }
 
   void openManufacturerBottomSheet() {
+    final authProvider = context.read<AuthProvider>();
     openBottomSheet(
       context: context,
       items: manufacturers.map((m) => m['name']!).toList(),
       title: 'Marka Seçin',
       onItemSelected: (selected) {
         setState(() {
-          selectedManufacturer = selected;
-          selectedModel = null;
-          selectedYear = null;
+          authProvider.updateSelectedManufacturer(selected ?? '');
+          authProvider.updateSelectedModel(null);
+          authProvider.updateSelectedYear(null);
           models.clear();
           years.clear();
           final manufacturerId =
@@ -208,7 +208,8 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
   }
 
   void openModelBottomSheet() {
-    if (selectedManufacturer == null) return;
+    final authProvider = context.read<AuthProvider>();
+    if ( authProvider.selectedManufacturer == null) return;
 
     openBottomSheet(
       context: context,
@@ -216,8 +217,8 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
       title: 'Model Seçin',
       onItemSelected: (selected) {
         setState(() {
-          selectedModel = selected;
-          selectedYear = null;
+          authProvider.updateSelectedModel(selected);
+          authProvider.updateSelectedYear(null);
           years.clear();
           fetchYears();
         });
@@ -227,7 +228,8 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
   }
 
   void openYearBottomSheet() {
-    if (selectedModel == null) return;
+    final authProvider = context.read<AuthProvider>();
+    if (authProvider.selectedModel == null) return;
 
     openBottomSheet(
       context: context,
@@ -235,7 +237,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
       title: 'İl Seçin',
       onItemSelected: (selected) {
         setState(() {
-          selectedYear = selected;
+          authProvider.updateSelectedYear(selected);
           fetchColors();
         });
       },
@@ -244,6 +246,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
   }
 
   void openColorBottomSheet() {
+    final authProvider = context.read<AuthProvider>();
     if (colors.isEmpty) {
       print("Colors list is empty, cannot open color bottom sheet.");
       return;
@@ -255,7 +258,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
       title: "Rəng Seçin",
       onItemSelected: (selected) {
         setState(() {
-          selectedColor = selected;
+          authProvider.updateSelectedColor(selected);
         });
       },
       onSearch: null,
@@ -264,6 +267,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -286,7 +290,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Text(
-                      selectedManufacturer ?? 'Marka Seçin',
+                      authProvider.selectedManufacturer ?? 'Marka Seçin',
                       style: TextStyle(color: Colors.black),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -294,11 +298,11 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                   ),
                 ),
               ),
-              if (validateSelection(selectedManufacturer, 'Marka') != null)
+              if (validateSelection(authProvider.selectedManufacturer, 'Marka') != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
-                    validateSelection(selectedManufacturer, 'Marka')!,
+                    validateSelection(authProvider.selectedManufacturer, 'Marka')!,
                     style: TextStyle(color: Colors.red, fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -317,7 +321,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                 width: double.infinity,
                 height: 50,
                 child: GestureDetector(
-                  onTap: selectedManufacturer != null
+                  onTap: authProvider.selectedManufacturer != null
                       ? openModelBottomSheet
                       : null,
                   child: Container(
@@ -327,18 +331,18 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                       border: Border.all(color: Colors.grey),
                     ),
                     child: Text(
-                      selectedModel ?? 'Model Seçin',
+                      authProvider.selectedModel ?? 'Model Seçin',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
               ),
-              if (validateSelection(selectedModel, 'Model') != null)
+              if (validateSelection(authProvider.selectedModel, 'Model') != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
-                    validateSelection(selectedModel, 'Model')!,
+                    validateSelection(authProvider.selectedModel, 'Model')!,
                     style: TextStyle(color: Colors.red, fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -358,7 +362,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                 height: 50,
                 child: GestureDetector(
                   onTap:
-                  selectedModel != null ? openYearBottomSheet : null,
+                  authProvider.selectedModel != null ? openYearBottomSheet : null,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     decoration: BoxDecoration(
@@ -366,18 +370,18 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                       border: Border.all(color: Colors.grey),
                     ),
                     child: Text(
-                      selectedYear ?? 'İl Seçin',
+                      authProvider.selectedYear ?? 'İl Seçin',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
               ),
-              if (validateSelection(selectedYear, 'İl') != null)
+              if (validateSelection(authProvider.selectedYear, 'İl') != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
-                    validateSelection(selectedYear, 'İl')!,
+                    validateSelection(authProvider.selectedYear, 'İl')!,
                     style: TextStyle(color: Colors.red, fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -396,7 +400,7 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                 width: double.infinity,
                 height: 50,
                 child: GestureDetector(
-                  onTap: selectedYear != null ? openColorBottomSheet : null,
+                  onTap: authProvider.selectedYear != null ? openColorBottomSheet : null,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     decoration: BoxDecoration(
@@ -404,18 +408,18 @@ class _DependentDropdownsState extends State<DependentDropdowns> {
                       border: Border.all(color: Colors.grey),
                     ),
                     child: Text(
-                      selectedColor ?? 'Rəng Seçin',
+                      authProvider.selectedColor ?? 'Rəng Seçin',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
               ),
-              if (validateSelection(selectedColor, 'Rəng') != null)
+              if (validateSelection(authProvider.selectedColor, 'Rəng') != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
-                    validateSelection(selectedColor, 'Rəng')!,
+                    validateSelection(authProvider.selectedColor, 'Rəng')!,
                     style: TextStyle(color: Colors.red, fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

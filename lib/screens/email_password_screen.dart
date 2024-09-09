@@ -1,4 +1,5 @@
 import 'package:driver/common/custom_text_field.dart';
+import 'package:driver/common/globals.dart';
 import 'package:driver/models/state_model.dart';
 import 'package:driver/providers/auth_provider.dart';
 import 'package:driver/providers/route_provider.dart';
@@ -27,13 +28,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
     var routeProvider = Provider.of<RouteProvider>(context);
 
     return Scaffold(
-      body: authProvider.vehicleDetailStep == true
-          ? Center(
-              child: Text(
-              'Doğrulandı!',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-            ))
-          : Form(
+      body: Form(
               key: authProvider.emailPasswordFormKey,
               child: SingleChildScrollView(
                 child: Column(
@@ -48,7 +43,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         child: Column(
                           children: [
                             Text(
-                              "Şəxsiyyət məlumatlarınız alınacaq.",
+                              "Zəhmət olmasa, aşağıdakı məlumatları təqdim edin.",
                               style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.bold),
                             ),
@@ -56,7 +51,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                               height: 16,
                             ),
                             Text(
-                              "Provayderinizin məlumatı sürücülük vəsiqəsi məlumatlarına uyğun olmalıdır. Düzgün məlumatları daxil etdiyinizə əmin olun",
+                              "Daxil etdiyiniz məlumatlar sürücülük vəsiqəsinizdəki məlumatlara uyğun olmalıdır. Düzgün məlumatları daxil etdiyinizə əmin olun.",
                               style: GoogleFonts.nunito(),
                             ),
                           ],
@@ -71,6 +66,8 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       child: CustomTextField(
                         controller: authProvider.emailController,
                         hintText: 'E-poçt',
+                        onTextChanged: authProvider.updateEmail,
+                        errorText: authProvider.emailError,
                       ),
                     ),
                     SizedBox(
@@ -96,14 +93,15 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             print(number.phoneNumber.toString() +
                                 " onInputChanged");
                             authProvider.selectedPhoneCode = number.dialCode;
-                          },
-                          onInputValidated: (bool value) {
-                            print(value);
+                            if (number.phoneNumber.toString().length == 9) {
+                              isPhoneNumberValid = true;
+                            }
                           },
                           textAlign: TextAlign.start,
-                          countries: ["AZ", "TR"],
+                          countries: ["AZ"],
                           ignoreBlank: false,
-                          autoValidateMode: AutovalidateMode.disabled,
+                          maxLength: 12,
+                          autoValidateMode: AutovalidateMode.onUnfocus,
                           selectorTextStyle: TextStyle(color: Colors.black),
                           initialValue: PhoneNumber(
                             isoCode: numberInitialCode,
@@ -111,7 +109,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           textFieldController: authProvider.phoneController,
                           keyboardType: TextInputType.numberWithOptions(
                               signed: true, decimal: true),
-                          validator: null,
+                          errorMessage: authProvider.phoneError,
                           onSaved: (PhoneNumber number) {
                             print('On Saved: $number');
                           },
@@ -126,12 +124,12 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                       child: CustomTextField(
                         controller: TextEditingController(
                             text: authProvider.city?.title ?? ""),
-                        hintText: "Şəhər",
+                        hintText: "Yaşadığınız şəhər",
                         readOnly: true,
                         onTap: () {
                           showMaterialSelectionPicker<StateModel?>(
                             context: context,
-                            title: 'Şəhər',
+                            title: 'Yaşadığınız şəhər',
                             items: StateModel.townModels
                                 .followedBy(StateModel.villageModels)
                                 .followedBy(StateModel.subwayStationModels)
@@ -142,6 +140,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                             cancelText: "Ləğv et",
                             confirmText: "Təsdiqlə",
                             onChanged: (value) => setState(() {
+                              isCityValid = true;
                               authProvider.city = value;
                             }),
                           );
@@ -166,12 +165,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                           authProvider.isPasswordVisible =
                               !authProvider.isPasswordVisible;
                         },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'This field is required';
-                          }
-                          return null;
-                        },
+                        errorText: authProvider.passwordError,
                       ),
                     ),
                     Padding(
@@ -190,13 +184,6 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                               !authProvider.isPasswordVisible;
                         },
                         errorText: authProvider.passwordAgainError,
-                        validator: (value) {
-                          if (value !=
-                              authProvider.signupPasswordController.text) {
-                            return 'Passwords should match';
-                          }
-                          return null;
-                        },
                       ),
                     ),
                     Padding(
@@ -223,11 +210,13 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: 'By signing up, you agree to our ',
+                              text:
+                                  'Tətbiqdə qeydiyyatdan keçməklə siz “Fayton” tətbiqinin ',
                               style: DefaultTextStyle.of(context).style,
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: 'Terms and Conditions',
+                                  text:
+                                      'Ümumi Şərtlər və Qaydalar və Məxfilik Siyasəti və Kukilərin ',
                                   style: TextStyle(
                                     color: Colors.blue,
                                     decoration: TextDecoration.underline,
@@ -237,20 +226,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
                                 ),
                                 TextSpan(
                                   text:
-                                      ' and confirm that you have read and understood the ',
-                                ),
-                                TextSpan(
-                                  text: 'Privacy Policy for Drivers',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = onPrivacyTap,
-                                ),
-                                TextSpan(
-                                  text:
-                                      ' applicable for your country of operation.',
+                                      ' idarə olunması haqqında səhifələri oxuyub anladığınızı və qəbul etdiyinizi təsdiqləmiş olursunuz.',
                                 ),
                               ],
                             ),
@@ -267,7 +243,7 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
 
   void onTermsAndTap() {
     print('Terms and kelimesine tıklandı!');
-    _showOverlay(context, 'Term of use', 'terms_and_conditions');
+    _showOverlay(context, 'Ümumi Şərtlər və Qaydalar', 'terms_and_conditions');
   }
 
   void onPrivacyTap() {
@@ -280,20 +256,23 @@ class _EmailPasswordScreenState extends State<EmailPasswordScreen> {
   void _showOverlay(BuildContext context, title, doc) async {
     _overlayEntry = OverlayEntry(
         builder: (context) => Dialog(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 100, horizontal: 12),
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
                     padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(15)),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '$title - Read carefully',
+                              '$title',
                               style: GoogleFonts.nunito(),
                             ),
                             IconButton.outlined(

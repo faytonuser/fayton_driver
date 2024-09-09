@@ -8,6 +8,7 @@ import 'package:driver/providers/navbar_provider.dart';
 import 'package:driver/providers/route_provider.dart';
 import 'package:driver/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_selection_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
@@ -85,13 +86,15 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                            return 'Zəhmət olmasa, daxil edin';
                           }
                         },
                         onTap: () {
                           showMaterialSelectionPicker<StateModel?>(
                             context: context,
                             title: 'Gediş şəhərini seçin',
+                            cancelText: "Ləğv et",
+                            confirmText: "Təsdiqlə",
                             items: StateModel.townModels
                                 .followedBy(StateModel.villageModels)
                                 .followedBy(StateModel.subwayStationModels)
@@ -119,7 +122,7 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                            return 'Zəhmət olmasa, daxil edin';
                           }
                         },
                         onTap: () {
@@ -146,13 +149,13 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                           left: 48.0, right: 48, bottom: 24),
                       child: CustomTextField(
                         controller: routeProvider.estimatedDuration,
-                        hintText: "Təxmini çatmaq vaxtı və sürücü qeydi",
+                        hintText: "Səyahət vaxtı",
                         readOnly: false,
                         prefixIcon: FaIcon(FontAwesomeIcons.clock),
                         inputType: TextInputType.text,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                            return 'Zəhmət olmasa, daxil edin';
                           }
                         },
                       ),
@@ -162,15 +165,18 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                           left: 48.0, right: 48, bottom: 24),
                       child: CustomTextField(
                         controller: routeProvider.maxTravellerController,
-                        hintText: "Maksimum sərnişin sayi",
+                        hintText: "Boş yer sayı",
                         readOnly: false,
                         inputType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         prefixIcon: FaIcon(
                           FontAwesomeIcons.users,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                            return 'Zəhmət olmasa, daxil edin';
                           }
                         },
                       ),
@@ -180,8 +186,13 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                           left: 48.0, right: 48, bottom: 24),
                       child: CustomTextField(
                         controller: TextEditingController(),
+                        validator: (value) {
+                          if (routeProvider.selectedStartDate == null) {
+                            return 'Zəhmət olmasa, daxil edin';
+                          }
+                        },
                         hintText: routeProvider.selectedStartDate == null
-                            ? "Başlama tarixi"
+                            ? "Yola düşmə vaxtı"
                             : Utils.getFormatedDate(
                                 routeProvider.selectedStartDate.toString()),
                         readOnly: true,
@@ -190,6 +201,9 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                         ),
                         onTap: () async {
                           await showMaterialDatePicker(
+                              confirmText: "Təsdiq et",
+                              cancelText: "Ləğv et",
+                              title: "Yola düşmə vaxtı",
                               firstDate: DateTime.now(),
                               lastDate: DateTime.now().add(Duration(days: 365)),
                               context: context,
@@ -220,36 +234,46 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                       child: CustomTextField(
                         controller: TextEditingController(),
                         hintText: routeProvider.selectedEndDate == null
-                            ? "Bitmə vaxtı"
+                            ? "Çatma vaxtı"
                             : Utils.getFormatedDate(
                                 routeProvider.selectedEndDate.toString()),
                         readOnly: true,
+                        validator: (value) {
+                          if (routeProvider.selectedEndDate == null) {
+                            return 'Zəhmət olmasa, daxil edin';
+                          }
+                        },
                         prefixIcon: FaIcon(
                           FontAwesomeIcons.calendarCheck,
                         ),
                         onTap: () async {
                           await showMaterialDatePicker(
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime.now().add(Duration(days: 365)),
-                              context: context,
-                              selectedDate: routeProvider.selectedEndDate ??
-                                  DateTime.now(),
-                              onChanged: (value) =>
-                                  routeProvider.selectedEndDate = value,
-                              onConfirmed: () async {
-                                await showMaterialTimePicker(
-                                    context: context,
-                                    selectedTime: routeProvider.endTime ??
-                                        TimeOfDay.now(),
-                                    onChanged: (value) =>
-                                        routeProvider.endTime = value,
-                                    onConfirmed: () {
-                                      routeProvider.selectedEndDate =
-                                          Utils.mergeDateTime(
-                                              routeProvider.selectedEndDate,
-                                              routeProvider.endTime);
-                                    });
-                              });
+                            cancelText: "Ləğv et",
+                            confirmText: "Təsdiq et",
+                            title: "Çatma vaxtı",
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 365)),
+                            context: context,
+                            selectedDate:
+                                routeProvider.selectedEndDate ?? DateTime.now(),
+                            onChanged: (value) =>
+                                routeProvider.selectedEndDate = value,
+                            onConfirmed: () async {
+                              await showMaterialTimePicker(
+                                context: context,
+                                selectedTime:
+                                    routeProvider.endTime ?? TimeOfDay.now(),
+                                onChanged: (value) =>
+                                    routeProvider.endTime = value,
+                                onConfirmed: () {
+                                  routeProvider.selectedEndDate =
+                                      Utils.mergeDateTime(
+                                          routeProvider.selectedEndDate,
+                                          routeProvider.endTime);
+                                },
+                              );
+                            },
+                          );
                         },
                       ),
                     ),
@@ -260,13 +284,16 @@ class _AddRoutesScreenState extends State<AddRoutesScreen> {
                         controller: routeProvider.priceController,
                         hintText: "Adambaşı qiymət",
                         readOnly: false,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         prefixIcon: FaIcon(
                           FontAwesomeIcons.moneyCheckDollar,
                         ),
                         inputType: TextInputType.text,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'This field is required';
+                            return 'Zəhmət olmasa, daxil edin';
                           }
                         },
                       ),
